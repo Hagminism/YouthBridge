@@ -1,0 +1,11 @@
+# Xcode
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+DerivedData/
+.build/
+
+# Secrets — never commit
+YouthBridge/Config.plist
+
+# macOS
+.DS_Store
