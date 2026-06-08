@@ -11,14 +11,29 @@
         <!--Notifications View Controller-->
         <scene sceneID="blr-Cg-72p">
             <objects>
-                <viewController storyboardIdentifier="NotificationViewController" id="QqG-Jx-nXm" customClass="NotificationsViewController" customModule="YouthBridge" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NotificationsViewController" id="QqG-Jx-nXm" customClass="NotificationsViewController" customModule="YouthBridge" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="exQ-eO-SSM">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tbl-notif-001">
+                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="aZ3-r1-ed4"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="tbl-notif-001" firstAttribute="top" secondItem="aZ3-r1-ed4" secondAttribute="top" id="cst-notif-001"/>
+                            <constraint firstItem="tbl-notif-001" firstAttribute="leading" secondItem="aZ3-r1-ed4" secondAttribute="leading" id="cst-notif-002"/>
+                            <constraint firstItem="tbl-notif-001" firstAttribute="trailing" secondItem="aZ3-r1-ed4" secondAttribute="trailing" id="cst-notif-003"/>
+                            <constraint firstItem="tbl-notif-001" firstAttribute="bottom" secondItem="aZ3-r1-ed4" secondAttribute="bottom" id="cst-notif-004"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="2Q3-qf-BAC"/>
+                    <connections>
+                        <outlet property="tableView" destination="tbl-notif-001" id="out-notif-001"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6MR-xX-8Zg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -31,10 +46,98 @@
                     <view key="view" contentMode="scaleToFill" id="Hg4-kA-4ta">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scr-myp-001">
+                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="stk-myp-001">
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="600"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" id="vi-myp-sta">
+                                                <rect key="frame" x="0.0" y="0.0" width="393" height="100"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <subviews>
+                                                    <label opaque="NO" userLabel="Scrapped Count" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lbl-myp-cnt">
+                                                        <rect key="frame" x="16" y="40" width="361" height="20"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            </view>
+                                            <view contentMode="scaleToFill" id="vi-myp-not">
+                                                <rect key="frame" x="0.0" y="100" width="393" height="80"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <subviews>
+                                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="swi-myp-not">
+                                                        <rect key="frame" x="328" y="24" width="49" height="31"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    </switch>
+                                                </subviews>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            </view>
+                                            <view contentMode="scaleToFill" id="vi-myp-sav">
+                                                <rect key="frame" x="0.0" y="180" width="393" height="420"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <subviews>
+                                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="col-myp-sav">
+                                                        <rect key="frame" x="16" y="40" width="361" height="360"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="lay-myp-sav">
+                                                            <size key="itemSize" width="128" height="128"/>
+                                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                        </collectionViewFlowLayout>
+                                                        <cells/>
+                                                    </collectionView>
+                                                    <label opaque="NO" userLabel="Empty Label" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lbl-myp-emp">
+                                                        <rect key="frame" x="16" y="200" width="361" height="20"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            </view>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="600" id="cst-myp-001"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="stk-myp-001" firstAttribute="top" secondItem="scr-myp-001" secondAttribute="top" id="cst-scr-001"/>
+                                    <constraint firstItem="stk-myp-001" firstAttribute="leading" secondItem="scr-myp-001" secondAttribute="leading" id="cst-scr-002"/>
+                                    <constraint firstItem="stk-myp-001" firstAttribute="trailing" secondItem="scr-myp-001" secondAttribute="trailing" id="cst-scr-003"/>
+                                    <constraint firstItem="stk-myp-001" firstAttribute="bottom" secondItem="scr-myp-001" secondAttribute="bottom" id="cst-scr-004"/>
+                                    <constraint firstItem="stk-myp-001" firstAttribute="width" secondItem="scr-myp-001" secondAttribute="width" id="cst-scr-005"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="QgQ-44-EBl"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="scr-myp-001" firstAttribute="top" secondItem="QgQ-44-EBl" secondAttribute="top" id="cst-myp-001"/>
+                            <constraint firstItem="scr-myp-001" firstAttribute="leading" secondItem="QgQ-44-EBl" secondAttribute="leading" id="cst-myp-002"/>
+                            <constraint firstItem="scr-myp-001" firstAttribute="trailing" secondItem="QgQ-44-EBl" secondAttribute="trailing" id="cst-myp-003"/>
+                            <constraint firstItem="scr-myp-001" firstAttribute="bottom" secondItem="QgQ-44-EBl" secondAttribute="bottom" id="cst-myp-004"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="rfd-fZ-THv"/>
+                    <connections>
+                        <outlet property="scrollView" destination="scr-myp-001" id="out-myp-001"/>
+                        <outlet property="contentStack" destination="stk-myp-001" id="out-myp-002"/>
+                        <outlet property="statsCard" destination="vi-myp-sta" id="out-myp-003"/>
+                        <outlet property="scrappedCountLabel" destination="lbl-myp-cnt" id="out-myp-004"/>
+                        <outlet property="notifCard" destination="vi-myp-not" id="out-myp-005"/>
+                        <outlet property="notifToggle" destination="swi-myp-not" id="out-myp-006"/>
+                        <outlet property="savedCollectionView" destination="col-myp-sav" id="out-myp-007"/>
+                        <outlet property="emptyLabel" destination="lbl-myp-emp" id="out-myp-008"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ez7-nx-VH8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -124,7 +227,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9ph-4Y-s36" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1921.3740458015266" y="-327.46478873239437"/>
+            <point key="canvasLocation" x="1921" y="-327"/>
         </scene>
         <!--Item 2-->
         <scene sceneID="KTA-EH-MkX">
@@ -144,6 +247,218 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r6A-im-YzJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1921" y="409"/>
+        </scene>
+        <!--Search View Controller-->
+        <scene sceneID="src-01-sc1">
+            <objects>
+                <viewController storyboardIdentifier="SearchViewController" id="src-01-vc1" customClass="SearchViewController" customModule="YouthBridge" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="src-01-vi1">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tbl-src-001">
+                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="act-src-001">
+                                <rect key="frame" x="186.6" y="416" width="20" height="20"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="src-01-sf1"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="tbl-src-001" firstAttribute="top" secondItem="src-01-sf1" secondAttribute="top" id="cst-src-001"/>
+                            <constraint firstItem="tbl-src-001" firstAttribute="leading" secondItem="src-01-sf1" secondAttribute="leading" id="cst-src-002"/>
+                            <constraint firstItem="tbl-src-001" firstAttribute="trailing" secondItem="src-01-sf1" secondAttribute="trailing" id="cst-src-003"/>
+                            <constraint firstItem="tbl-src-001" firstAttribute="bottom" secondItem="src-01-sf1" secondAttribute="bottom" id="cst-src-004"/>
+                            <constraint firstItem="act-src-001" firstAttribute="centerX" secondItem="src-01-vi1" secondAttribute="centerX" id="cst-src-005"/>
+                            <constraint firstItem="act-src-001" firstAttribute="centerY" secondItem="src-01-vi1" secondAttribute="centerY" id="cst-src-006"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="tbl-src-001" id="out-src-001"/>
+                        <outlet property="activityIndicator" destination="act-src-001" id="out-src-002"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="src-01-pl1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4200" y="-327"/>
+        </scene>
+        <!--Detail View Controller-->
+        <scene sceneID="dtl-01-sc1">
+            <objects>
+                <viewController storyboardIdentifier="DetailViewController" id="dtl-01-vc1" customClass="DetailViewController" customModule="YouthBridge" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="dtl-01-vi1">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scr-dtl-001">
+                                <rect key="frame" x="0.0" y="59" width="393" height="693"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="stk-dtl-001">
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="200"/>
+                                        <subviews>
+                                            <label opaque="NO" userLabel="Category Badge" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lbl-dtl-cat">
+                                                <rect key="frame" x="0.0" y="0.0" width="393" height="20.333333333333332"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userLabel="Title Label" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lbl-dtl-tit">
+                                                <rect key="frame" x="0.0" y="20.333333333333332" width="393" height="20.333333333333332"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="stk-dtl-001" firstAttribute="top" secondItem="scr-dtl-001" secondAttribute="top" id="cst-scr-001"/>
+                                    <constraint firstItem="stk-dtl-001" firstAttribute="leading" secondItem="scr-dtl-001" secondAttribute="leading" id="cst-scr-002"/>
+                                    <constraint firstItem="stk-dtl-001" firstAttribute="trailing" secondItem="scr-dtl-001" secondAttribute="trailing" id="cst-scr-003"/>
+                                    <constraint firstItem="stk-dtl-001" firstAttribute="bottom" secondItem="scr-dtl-001" secondAttribute="bottom" id="cst-scr-004"/>
+                                    <constraint firstItem="stk-dtl-001" firstAttribute="width" secondItem="scr-dtl-001" secondAttribute="width" id="cst-scr-005"/>
+                                </constraints>
+                            </scrollView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bot-dtl-001" userLabel="Bottom Bar">
+                                <rect key="frame" x="0.0" y="752" width="393" height="66"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-dtl-scr" userLabel="Scrap Button">
+                                        <rect key="frame" x="16" y="11" width="44" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="cst-btn-001"/>
+                                            <constraint firstAttribute="height" constant="44" id="cst-btn-002"/>
+                                        </constraints>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="S"/>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-dtl-apl" userLabel="Apply Button">
+                                        <rect key="frame" x="76" y="11" width="301" height="44"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Apply"/>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="btn-dtl-scr" firstAttribute="centerY" secondItem="bot-dtl-001" secondAttribute="centerY" id="cst-bot-001"/>
+                                    <constraint firstItem="btn-dtl-scr" firstAttribute="leading" secondItem="bot-dtl-001" secondAttribute="leading" constant="16" id="cst-bot-002"/>
+                                    <constraint firstItem="btn-dtl-apl" firstAttribute="centerY" secondItem="bot-dtl-001" secondAttribute="centerY" id="cst-bot-003"/>
+                                    <constraint firstItem="btn-dtl-apl" firstAttribute="leading" secondItem="btn-dtl-scr" secondAttribute="trailing" constant="16" id="cst-bot-004"/>
+                                    <constraint firstItem="btn-dtl-apl" firstAttribute="trailing" secondItem="bot-dtl-001" secondAttribute="trailing" constant="-16" id="cst-bot-005"/>
+                                    <constraint firstAttribute="height" constant="66" id="cst-bot-006"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="dtl-01-sf1"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="scr-dtl-001" firstAttribute="top" secondItem="dtl-01-sf1" secondAttribute="top" id="cst-dtl-001"/>
+                            <constraint firstItem="scr-dtl-001" firstAttribute="leading" secondItem="dtl-01-sf1" secondAttribute="leading" id="cst-dtl-002"/>
+                            <constraint firstItem="scr-dtl-001" firstAttribute="trailing" secondItem="dtl-01-sf1" secondAttribute="trailing" id="cst-dtl-003"/>
+                            <constraint firstItem="bot-dtl-001" firstAttribute="top" secondItem="scr-dtl-001" secondAttribute="bottom" id="cst-dtl-004"/>
+                            <constraint firstItem="bot-dtl-001" firstAttribute="leading" secondItem="dtl-01-sf1" secondAttribute="leading" id="cst-dtl-005"/>
+                            <constraint firstItem="bot-dtl-001" firstAttribute="trailing" secondItem="dtl-01-sf1" secondAttribute="trailing" id="cst-dtl-006"/>
+                            <constraint firstItem="bot-dtl-001" firstAttribute="bottom" secondItem="dtl-01-sf1" secondAttribute="bottom" id="cst-dtl-007"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="scrollView" destination="scr-dtl-001" id="out-dtl-001"/>
+                        <outlet property="contentStack" destination="stk-dtl-001" id="out-dtl-002"/>
+                        <outlet property="categoryLabel" destination="lbl-dtl-cat" id="out-dtl-003"/>
+                        <outlet property="titleLabel" destination="lbl-dtl-tit" id="out-dtl-004"/>
+                        <outlet property="scrapButton" destination="btn-dtl-scr" id="out-dtl-005"/>
+                        <outlet property="applyButton" destination="btn-dtl-apl" id="out-dtl-006"/>
+                        <outlet property="bottomBar" destination="bot-dtl-001" id="out-dtl-007"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dtl-01-pl1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4200" y="408"/>
+        </scene>
+        <!--Filter View Controller-->
+        <scene sceneID="flt-01-sc1">
+            <objects>
+                <viewController storyboardIdentifier="FilterViewController" id="flt-01-vc1" customClass="FilterViewController" customModule="YouthBridge" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="flt-01-vi1">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scr-flt-001">
+                                <rect key="frame" x="0.0" y="59" width="393" height="693"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vi-flt-con">
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="400"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" id="vi-flt-reg">
+                                                <rect key="frame" x="16" y="20" width="361" height="100"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            </view>
+                                            <view contentMode="scaleToFill" id="vi-flt-cat">
+                                                <rect key="frame" x="16" y="140" width="361" height="100"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            </view>
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="seg-flt-sts">
+                                                <rect key="frame" x="16" y="260" width="361" height="31"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <segments>
+                                                    <segment title="Active"/>
+                                                    <segment title="Expired"/>
+                                                    <segment title="All"/>
+                                                </segments>
+                                            </segmentedControl>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="400" id="cst-vi-001"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="vi-flt-con" firstAttribute="top" secondItem="scr-flt-001" secondAttribute="top" id="cst-scr-001"/>
+                                    <constraint firstItem="vi-flt-con" firstAttribute="leading" secondItem="scr-flt-001" secondAttribute="leading" id="cst-scr-002"/>
+                                    <constraint firstItem="vi-flt-con" firstAttribute="trailing" secondItem="scr-flt-001" secondAttribute="trailing" id="cst-scr-003"/>
+                                    <constraint firstItem="vi-flt-con" firstAttribute="bottom" secondItem="scr-flt-001" secondAttribute="bottom" id="cst-scr-004"/>
+                                    <constraint firstItem="vi-flt-con" firstAttribute="width" secondItem="scr-flt-001" secondAttribute="width" id="cst-scr-005"/>
+                                </constraints>
+                            </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-flt-apl">
+                                <rect key="frame" x="16" y="762" width="361" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="cst-btn-001"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Apply"/>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="flt-01-sf1"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="scr-flt-001" firstAttribute="top" secondItem="flt-01-sf1" secondAttribute="top" id="cst-flt-001"/>
+                            <constraint firstItem="scr-flt-001" firstAttribute="leading" secondItem="flt-01-sf1" secondAttribute="leading" id="cst-flt-002"/>
+                            <constraint firstItem="scr-flt-001" firstAttribute="trailing" secondItem="flt-01-sf1" secondAttribute="trailing" id="cst-flt-003"/>
+                            <constraint firstItem="btn-flt-apl" firstAttribute="top" secondItem="scr-flt-001" secondAttribute="bottom" constant="10" id="cst-flt-004"/>
+                            <constraint firstItem="btn-flt-apl" firstAttribute="leading" secondItem="flt-01-sf1" secondAttribute="leading" constant="16" id="cst-flt-005"/>
+                            <constraint firstItem="btn-flt-apl" firstAttribute="trailing" secondItem="flt-01-sf1" secondAttribute="trailing" constant="-16" id="cst-flt-006"/>
+                            <constraint firstItem="btn-flt-apl" firstAttribute="bottom" secondItem="flt-01-sf1" secondAttribute="bottom" constant="-12" id="cst-flt-007"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="scrollView" destination="scr-flt-001" id="out-flt-001"/>
+                        <outlet property="contentView" destination="vi-flt-con" id="out-flt-002"/>
+                        <outlet property="applyButton" destination="btn-flt-apl" id="out-flt-003"/>
+                        <outlet property="regionChipsContainer" destination="vi-flt-reg" id="out-flt-004"/>
+                        <outlet property="categoryBentoContainer" destination="vi-flt-cat" id="out-flt-005"/>
+                        <outlet property="statusControl" destination="seg-flt-sts" id="out-flt-006"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="flt-01-pl1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4200" y="1239"/>
         </scene>
     </scenes>
     <resources>
