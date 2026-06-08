@@ -51,16 +51,22 @@ final class GeminiRemoteDataSource: GeminiDataSourceProtocol {
             return try await sendWithRetry(request: request, retriesLeft: retriesLeft - 1)
         }
 
-        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
 
-        if let errorObj = json?["error"] as? [String: Any],
-           let message = errorObj["message"] as? String {
-            if statusCode == 429 {
-                throw NSError(domain: "GeminiAPI", code: 429,
-                              userInfo: [NSLocalizedDescriptionKey: "요청 한도 초과. 잠시 후 다시 시도해주세요."])
+        // HTTP 상태 코드가 성공 범위가 아닐 때의 명시적 예외 처리 강화
+        guard (200...299).contains(statusCode) else {
+            if let errorObj = json?["error"] as? [String: Any],
+               let message = errorObj["message"] as? String {
+                if statusCode == 429 {
+                    throw NSError(domain: "GeminiAPI", code: 429,
+                                   userInfo: [NSLocalizedDescriptionKey: "요청 한도 초과. 잠시 후 다시 시도해주세요."])
+                }
+                throw NSError(domain: "GeminiAPI", code: statusCode,
+                              userInfo: [NSLocalizedDescriptionKey: message])
+            } else {
+                throw NSError(domain: "GeminiAPI", code: statusCode,
+                              userInfo: [NSLocalizedDescriptionKey: "서버 오류가 발생했습니다. (Status: \(statusCode))"])
             }
-            throw NSError(domain: "GeminiAPI", code: statusCode,
-                          userInfo: [NSLocalizedDescriptionKey: message])
         }
 
         let candidates = json?["candidates"] as? [[String: Any]]

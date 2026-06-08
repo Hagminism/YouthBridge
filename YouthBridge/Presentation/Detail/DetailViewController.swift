@@ -39,6 +39,7 @@ final class DetailViewController: UIViewController {
     init(policy: Policy) {
         super.init(nibName: nil, bundle: nil)
         viewModel = DIContainer.shared.makeDetailViewModel(policy: policy)
+        hidesBottomBarWhenPushed = true
     }
     required init?(coder: NSCoder) { fatalError() }
 
@@ -139,11 +140,22 @@ final class DetailViewController: UIViewController {
     // MARK: - NavBar
     private func setupNavBar() {
         navigationController?.setNavigationBarHidden(false, animated: true)
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.titleTextAttributes = [.foregroundColor: AppColor.textPrimary]
+        appearance.largeTitleTextAttributes = [.foregroundColor: AppColor.textPrimary]
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "chevron.left"),
             style: .plain, target: self, action: #selector(backTapped)
         )
         navigationItem.leftBarButtonItem?.tintColor = AppColor.textPrimary
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "square.and.arrow.up"),
             style: .plain, target: self, action: #selector(shareTapped)
