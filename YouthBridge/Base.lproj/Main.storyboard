@@ -105,26 +105,26 @@
                                             </view>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="600" id="cst-myp-001"/>
+                                            <constraint firstAttribute="height" constant="600" id="cst-myp-stk-h"/>
                                         </constraints>
                                     </stackView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="stk-myp-001" firstAttribute="top" secondItem="scr-myp-001" secondAttribute="top" id="cst-scr-001"/>
-                                    <constraint firstItem="stk-myp-001" firstAttribute="leading" secondItem="scr-myp-001" secondAttribute="leading" id="cst-scr-002"/>
-                                    <constraint firstItem="stk-myp-001" firstAttribute="trailing" secondItem="scr-myp-001" secondAttribute="trailing" id="cst-scr-003"/>
-                                    <constraint firstItem="stk-myp-001" firstAttribute="bottom" secondItem="scr-myp-001" secondAttribute="bottom" id="cst-scr-004"/>
-                                    <constraint firstItem="stk-myp-001" firstAttribute="width" secondItem="scr-myp-001" secondAttribute="width" id="cst-scr-005"/>
+                                    <constraint firstItem="stk-myp-001" firstAttribute="top" secondItem="scr-myp-001" secondAttribute="top" id="cst-myp-stk-001"/>
+                                    <constraint firstItem="stk-myp-001" firstAttribute="leading" secondItem="scr-myp-001" secondAttribute="leading" id="cst-myp-stk-002"/>
+                                    <constraint firstItem="stk-myp-001" firstAttribute="trailing" secondItem="scr-myp-001" secondAttribute="trailing" id="cst-myp-stk-003"/>
+                                    <constraint firstItem="stk-myp-001" firstAttribute="bottom" secondItem="scr-myp-001" secondAttribute="bottom" id="cst-myp-stk-004"/>
+                                    <constraint firstItem="stk-myp-001" firstAttribute="width" secondItem="scr-myp-001" secondAttribute="width" id="cst-myp-stk-005"/>
                                 </constraints>
                             </scrollView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="QgQ-44-EBl"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="scr-myp-001" firstAttribute="top" secondItem="QgQ-44-EBl" secondAttribute="top" id="cst-myp-001"/>
-                            <constraint firstItem="scr-myp-001" firstAttribute="leading" secondItem="QgQ-44-EBl" secondAttribute="leading" id="cst-myp-002"/>
-                            <constraint firstItem="scr-myp-001" firstAttribute="trailing" secondItem="QgQ-44-EBl" secondAttribute="trailing" id="cst-myp-003"/>
-                            <constraint firstItem="scr-myp-001" firstAttribute="bottom" secondItem="QgQ-44-EBl" secondAttribute="bottom" id="cst-myp-004"/>
+                            <constraint firstItem="scr-myp-001" firstAttribute="top" secondItem="QgQ-44-EBl" secondAttribute="top" id="cst-myp-scr-001"/>
+                            <constraint firstItem="scr-myp-001" firstAttribute="leading" secondItem="QgQ-44-EBl" secondAttribute="leading" id="cst-myp-scr-002"/>
+                            <constraint firstItem="scr-myp-001" firstAttribute="trailing" secondItem="QgQ-44-EBl" secondAttribute="trailing" id="cst-myp-scr-003"/>
+                            <constraint firstItem="scr-myp-001" firstAttribute="bottom" secondItem="QgQ-44-EBl" secondAttribute="bottom" id="cst-myp-scr-004"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="rfd-fZ-THv"/>
@@ -132,7 +132,7 @@
                         <outlet property="scrollView" destination="scr-myp-001" id="out-myp-001"/>
                         <outlet property="contentStack" destination="stk-myp-001" id="out-myp-002"/>
                         <outlet property="statsCard" destination="vi-myp-sta" id="out-myp-003"/>
-                        <outlet property="scrappedCountLabel" destination="lbl-myp-cnt" id="out-myp-004"/>
+                        <outlet scrappedCountLabel="lbl-myp-cnt" destination="out-myp-004" id="out-myp-004"/>
                         <outlet property="notifCard" destination="vi-myp-not" id="out-myp-005"/>
                         <outlet property="notifToggle" destination="swi-myp-not" id="out-myp-006"/>
                         <outlet property="savedCollectionView" destination="col-myp-sav" id="out-myp-007"/>
@@ -271,8 +271,8 @@
                             <constraint firstItem="tbl-src-001" firstAttribute="leading" secondItem="src-01-sf1" secondAttribute="leading" id="cst-src-002"/>
                             <constraint firstItem="tbl-src-001" firstAttribute="trailing" secondItem="src-01-sf1" secondAttribute="trailing" id="cst-src-003"/>
                             <constraint firstItem="tbl-src-001" firstAttribute="bottom" secondItem="src-01-sf1" secondAttribute="bottom" id="cst-src-004"/>
-                            <constraint firstItem="act-src-001" firstAttribute="centerX" secondItem="src-01-vi1" secondAttribute="centerX" id="cst-src-005"/>
-                            <constraint firstItem="act-src-001" firstAttribute="centerY" secondItem="src-01-vi1" secondAttribute="centerY" id="cst-src-006"/>
+                            <constraint firstItem="act-src-001" firstAttribute="centerX" secondItem="src-01-vi1" secondAttribute="centerX" id="cst-src-act-005"/>
+                            <constraint firstItem="act-src-001" firstAttribute="centerY" secondItem="src-01-vi1" secondAttribute="centerY" id="cst-src-act-006"/>
                         </constraints>
                     </view>
                     <connections>
@@ -316,11 +316,11 @@
                                     </stackView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="stk-dtl-001" firstAttribute="top" secondItem="scr-dtl-001" secondAttribute="top" id="cst-scr-001"/>
-                                    <constraint firstItem="stk-dtl-001" firstAttribute="leading" secondItem="scr-dtl-001" secondAttribute="leading" id="cst-scr-002"/>
-                                    <constraint firstItem="stk-dtl-001" firstAttribute="trailing" secondItem="scr-dtl-001" secondAttribute="trailing" id="cst-scr-003"/>
-                                    <constraint firstItem="stk-dtl-001" firstAttribute="bottom" secondItem="scr-dtl-001" secondAttribute="bottom" id="cst-scr-004"/>
-                                    <constraint firstItem="stk-dtl-001" firstAttribute="width" secondItem="scr-dtl-001" secondAttribute="width" id="cst-scr-005"/>
+                                    <constraint firstItem="stk-dtl-001" firstAttribute="top" secondItem="scr-dtl-001" secondAttribute="top" id="cst-dtl-stk-001"/>
+                                    <constraint firstItem="stk-dtl-001" firstAttribute="leading" secondItem="scr-dtl-001" secondAttribute="leading" id="cst-dtl-stk-002"/>
+                                    <constraint firstItem="stk-dtl-001" firstAttribute="trailing" secondItem="scr-dtl-001" secondAttribute="trailing" id="cst-dtl-stk-003"/>
+                                    <constraint firstItem="stk-dtl-001" firstAttribute="bottom" secondItem="scr-dtl-001" secondAttribute="bottom" id="cst-dtl-stk-004"/>
+                                    <constraint firstItem="stk-dtl-001" firstAttribute="width" secondItem="scr-dtl-001" secondAttribute="width" id="cst-dtl-stk-005"/>
                                 </constraints>
                             </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bot-dtl-001" userLabel="Bottom Bar">
@@ -329,8 +329,8 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-dtl-scr" userLabel="Scrap Button">
                                         <rect key="frame" x="16" y="11" width="44" height="44"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="44" id="cst-btn-001"/>
-                                            <constraint firstAttribute="height" constant="44" id="cst-btn-002"/>
+                                            <constraint firstAttribute="width" constant="44" id="cst-btn-dtl-w"/>
+                                            <constraint firstAttribute="height" constant="44" id="cst-btn-dtl-h"/>
                                         </constraints>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="S"/>
@@ -343,25 +343,25 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstItem="btn-dtl-scr" firstAttribute="centerY" secondItem="bot-dtl-001" secondAttribute="centerY" id="cst-bot-001"/>
-                                    <constraint firstItem="btn-dtl-scr" firstAttribute="leading" secondItem="bot-dtl-001" secondAttribute="leading" constant="16" id="cst-bot-002"/>
-                                    <constraint firstItem="btn-dtl-apl" firstAttribute="centerY" secondItem="bot-dtl-001" secondAttribute="centerY" id="cst-bot-003"/>
-                                    <constraint firstItem="btn-dtl-apl" firstAttribute="leading" secondItem="btn-dtl-scr" secondAttribute="trailing" constant="16" id="cst-bot-004"/>
-                                    <constraint firstItem="btn-dtl-apl" firstAttribute="trailing" secondItem="bot-dtl-001" secondAttribute="trailing" constant="-16" id="cst-bot-005"/>
-                                    <constraint firstAttribute="height" constant="66" id="cst-bot-006"/>
+                                    <constraint firstItem="btn-dtl-scr" firstAttribute="centerY" secondItem="bot-dtl-001" secondAttribute="centerY" id="cst-dtl-sub-001"/>
+                                    <constraint firstItem="btn-dtl-scr" firstAttribute="leading" secondItem="bot-dtl-001" secondAttribute="leading" constant="16" id="cst-dtl-sub-002"/>
+                                    <constraint firstItem="btn-dtl-apl" firstAttribute="centerY" secondItem="bot-dtl-001" secondAttribute="centerY" id="cst-dtl-sub-003"/>
+                                    <constraint firstItem="btn-dtl-apl" firstAttribute="leading" secondItem="btn-dtl-scr" secondAttribute="trailing" constant="16" id="cst-dtl-sub-004"/>
+                                    <constraint firstItem="btn-dtl-apl" firstAttribute="trailing" secondItem="bot-dtl-001" secondAttribute="trailing" constant="-16" id="cst-dtl-sub-005"/>
+                                    <constraint firstAttribute="height" constant="66" id="cst-dtl-bot-h"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="dtl-01-sf1"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="scr-dtl-001" firstAttribute="top" secondItem="dtl-01-sf1" secondAttribute="top" id="cst-dtl-001"/>
-                            <constraint firstItem="scr-dtl-001" firstAttribute="leading" secondItem="dtl-01-sf1" secondAttribute="leading" id="cst-dtl-002"/>
-                            <constraint firstItem="scr-dtl-001" firstAttribute="trailing" secondItem="dtl-01-sf1" secondAttribute="trailing" id="cst-dtl-003"/>
-                            <constraint firstItem="bot-dtl-001" firstAttribute="top" secondItem="scr-dtl-001" secondAttribute="bottom" id="cst-dtl-004"/>
-                            <constraint firstItem="bot-dtl-001" firstAttribute="leading" secondItem="dtl-01-sf1" secondAttribute="leading" id="cst-dtl-005"/>
-                            <constraint firstItem="bot-dtl-001" firstAttribute="trailing" secondItem="dtl-01-sf1" secondAttribute="trailing" id="cst-dtl-006"/>
-                            <constraint firstItem="bot-dtl-001" firstAttribute="bottom" secondItem="dtl-01-sf1" secondAttribute="bottom" id="cst-dtl-007"/>
+                            <constraint firstItem="scr-dtl-001" firstAttribute="top" secondItem="dtl-01-sf1" secondAttribute="top" id="cst-dtl-scr-001"/>
+                            <constraint firstItem="scr-dtl-001" firstAttribute="leading" secondItem="dtl-01-sf1" secondAttribute="leading" id="cst-dtl-scr-002"/>
+                            <constraint firstItem="scr-dtl-001" firstAttribute="trailing" secondItem="dtl-01-sf1" secondAttribute="trailing" id="cst-dtl-scr-003"/>
+                            <constraint firstItem="bot-dtl-001" firstAttribute="top" secondItem="scr-dtl-001" secondAttribute="bottom" id="cst-dtl-scr-004"/>
+                            <constraint firstItem="bot-dtl-001" firstAttribute="leading" secondItem="dtl-01-sf1" secondAttribute="leading" id="cst-dtl-scr-005"/>
+                            <constraint firstItem="bot-dtl-001" firstAttribute="trailing" secondItem="dtl-01-sf1" secondAttribute="trailing" id="cst-dtl-scr-006"/>
+                            <constraint firstItem="bot-dtl-001" firstAttribute="bottom" secondItem="dtl-01-sf1" secondAttribute="bottom" id="cst-dtl-scr-007"/>
                         </constraints>
                     </view>
                     <connections>
@@ -414,22 +414,22 @@
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="400" id="cst-vi-001"/>
+                                            <constraint firstAttribute="height" constant="400" id="cst-flt-con-h"/>
                                         </constraints>
                                     </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="vi-flt-con" firstAttribute="top" secondItem="scr-flt-001" secondAttribute="top" id="cst-scr-001"/>
-                                    <constraint firstItem="vi-flt-con" firstAttribute="leading" secondItem="scr-flt-001" secondAttribute="leading" id="cst-scr-002"/>
-                                    <constraint firstItem="vi-flt-con" firstAttribute="trailing" secondItem="scr-flt-001" secondAttribute="trailing" id="cst-scr-003"/>
-                                    <constraint firstItem="vi-flt-con" firstAttribute="bottom" secondItem="scr-flt-001" secondAttribute="bottom" id="cst-scr-004"/>
-                                    <constraint firstItem="vi-flt-con" firstAttribute="width" secondItem="scr-flt-001" secondAttribute="width" id="cst-scr-005"/>
+                                    <constraint firstItem="vi-flt-con" firstAttribute="top" secondItem="scr-flt-001" secondAttribute="top" id="cst-flt-scr-001"/>
+                                    <constraint firstItem="vi-flt-con" firstAttribute="leading" secondItem="scr-flt-001" secondAttribute="leading" id="cst-flt-scr-002"/>
+                                    <constraint firstItem="vi-flt-con" firstAttribute="trailing" secondItem="scr-flt-001" secondAttribute="trailing" id="cst-flt-scr-003"/>
+                                    <constraint firstItem="vi-flt-con" firstAttribute="bottom" secondItem="scr-flt-001" secondAttribute="bottom" id="cst-flt-scr-004"/>
+                                    <constraint firstItem="vi-flt-con" firstAttribute="width" secondItem="scr-flt-001" secondAttribute="width" id="cst-flt-scr-005"/>
                                 </constraints>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-flt-apl">
                                 <rect key="frame" x="16" y="762" width="361" height="44"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="cst-btn-001"/>
+                                    <constraint firstAttribute="height" constant="44" id="cst-btn-flt-h"/>
                                 </constraints>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Apply"/>
@@ -438,13 +438,13 @@
                         <viewLayoutGuide key="safeArea" id="flt-01-sf1"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="scr-flt-001" firstAttribute="top" secondItem="flt-01-sf1" secondAttribute="top" id="cst-flt-001"/>
-                            <constraint firstItem="scr-flt-001" firstAttribute="leading" secondItem="flt-01-sf1" secondAttribute="leading" id="cst-flt-002"/>
-                            <constraint firstItem="scr-flt-001" firstAttribute="trailing" secondItem="flt-01-sf1" secondAttribute="trailing" id="cst-flt-003"/>
-                            <constraint firstItem="btn-flt-apl" firstAttribute="top" secondItem="scr-flt-001" secondAttribute="bottom" constant="10" id="cst-flt-004"/>
-                            <constraint firstItem="btn-flt-apl" firstAttribute="leading" secondItem="flt-01-sf1" secondAttribute="leading" constant="16" id="cst-flt-005"/>
-                            <constraint firstItem="btn-flt-apl" firstAttribute="trailing" secondItem="flt-01-sf1" secondAttribute="trailing" constant="-16" id="cst-flt-006"/>
-                            <constraint firstItem="btn-flt-apl" firstAttribute="bottom" secondItem="flt-01-sf1" secondAttribute="bottom" constant="-12" id="cst-flt-007"/>
+                            <constraint firstItem="scr-flt-001" firstAttribute="top" secondItem="flt-01-sf1" secondAttribute="top" id="cst-flt-vi-001"/>
+                            <constraint firstItem="scr-flt-001" firstAttribute="leading" secondItem="flt-01-sf1" secondAttribute="leading" id="cst-flt-vi-002"/>
+                            <constraint firstItem="scr-flt-001" firstAttribute="trailing" secondItem="flt-01-sf1" secondAttribute="trailing" id="cst-flt-vi-003"/>
+                            <constraint firstItem="btn-flt-apl" firstAttribute="top" secondItem="scr-flt-001" secondAttribute="bottom" constant="10" id="cst-flt-vi-004"/>
+                            <constraint firstItem="btn-flt-apl" firstAttribute="leading" secondItem="flt-01-sf1" secondAttribute="leading" constant="16" id="cst-flt-vi-005"/>
+                            <constraint firstItem="btn-flt-apl" firstAttribute="trailing" secondItem="flt-01-sf1" secondAttribute="trailing" constant="-16" id="cst-flt-vi-006"/>
+                            <constraint firstItem="btn-flt-apl" firstAttribute="bottom" secondItem="flt-01-sf1" secondAttribute="bottom" constant="-12" id="cst-flt-vi-007"/>
                         </constraints>
                     </view>
                     <connections>
