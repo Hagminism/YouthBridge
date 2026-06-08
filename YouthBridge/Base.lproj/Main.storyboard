@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tbl-notif-001">
-                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
+                                <rect key="frame" x="0.0" y="172" width="393" height="563"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                         </subviews>
@@ -48,16 +48,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scr-myp-001">
-                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
+                                <rect key="frame" x="0.0" y="172" width="393" height="563"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="stk-myp-001">
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="600"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" id="vi-myp-sta">
-                                                <rect key="frame" x="0.0" y="0.0" width="393" height="100"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="393" height="0.0"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
-                                                    <label opaque="NO" userLabel="Scrapped Count" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lbl-myp-cnt">
+                                                    <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lbl-myp-cnt" userLabel="Scrapped Count">
                                                         <rect key="frame" x="16" y="40" width="361" height="20"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -68,7 +68,7 @@
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                             </view>
                                             <view contentMode="scaleToFill" id="vi-myp-not">
-                                                <rect key="frame" x="0.0" y="100" width="393" height="80"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="393" height="600"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
                                                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="swi-myp-not">
@@ -79,7 +79,7 @@
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                             </view>
                                             <view contentMode="scaleToFill" id="vi-myp-sav">
-                                                <rect key="frame" x="0.0" y="180" width="393" height="420"/>
+                                                <rect key="frame" x="0.0" y="600" width="393" height="0.0"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
                                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="col-myp-sav">
@@ -93,7 +93,7 @@
                                                         </collectionViewFlowLayout>
                                                         <cells/>
                                                     </collectionView>
-                                                    <label opaque="NO" userLabel="Empty Label" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lbl-myp-emp">
+                                                    <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lbl-myp-emp" userLabel="Empty Label">
                                                         <rect key="frame" x="16" y="200" width="361" height="20"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -129,25 +129,25 @@
                     </view>
                     <navigationItem key="navigationItem" id="rfd-fZ-THv"/>
                     <connections>
-                        <outlet property="scrollView" destination="scr-myp-001" id="out-myp-001"/>
                         <outlet property="contentStack" destination="stk-myp-001" id="out-myp-002"/>
-                        <outlet property="statsCard" destination="vi-myp-sta" id="out-myp-003"/>
-                        <outlet property="scrappedCountLabel" destination="lbl-myp-cnt" id="out-myp-004"/>
+                        <outlet property="emptyLabel" destination="lbl-myp-emp" id="out-myp-008"/>
                         <outlet property="notifCard" destination="vi-myp-not" id="out-myp-005"/>
                         <outlet property="notifToggle" destination="swi-myp-not" id="out-myp-006"/>
                         <outlet property="savedCollectionView" destination="col-myp-sav" id="out-myp-007"/>
-                        <outlet property="emptyLabel" destination="lbl-myp-emp" id="out-myp-008"/>
+                        <outlet property="scrappedCountLabel" destination="lbl-myp-cnt" id="out-myp-004"/>
+                        <outlet property="scrollView" destination="scr-myp-001" id="out-myp-001"/>
+                        <outlet property="statsCard" destination="vi-myp-sta" id="out-myp-003"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ez7-nx-VH8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3349" y="1239"/>
         </scene>
-        <!--Item-->
+        <!--마이페이지-->
         <scene sceneID="Lme-3O-DtE">
             <objects>
                 <navigationController id="cGG-uI-ETu" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="Uqn-Hq-peZ"/>
+                    <tabBarItem key="tabBarItem" title="마이페이지" image="person" catalog="system" id="Uqn-Hq-peZ"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="MZC-bQ-muM">
                         <rect key="frame" x="0.0" y="118" width="393" height="54"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -169,26 +169,26 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vi-hm-hdr" userLabel="Header View">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="180"/>
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="190"/>
                                 <subviews>
-                                    <label opaque="NO" userLabel="Logo Label" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="YouthBridge" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-hm-logo">
+                                    <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="YouthBridge" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-hm-logo" userLabel="Logo Label">
                                         <rect key="frame" x="150" y="59" width="93" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vi-hm-sb" userLabel="Search Bar">
-                                        <rect key="frame" x="16" y="97" width="303" height="44"/>
+                                        <rect key="frame" x="16" y="97" width="307" height="44"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnifyingglass" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="img-hm-src">
-                                                <rect key="frame" x="12" y="14" width="17" height="16"/>
+                                                <rect key="frame" x="12" y="14.666666666666668" width="17" height="15.333333333333339"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="17" id="cst-hm-img-w"/>
                                                     <constraint firstAttribute="height" constant="17" id="cst-hm-img-h"/>
+                                                    <constraint firstAttribute="width" constant="17" id="cst-hm-img-w"/>
                                                 </constraints>
                                             </imageView>
-                                            <label opaque="NO" userLabel="Search Label" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="정책 이름이나 키워드를 검색하세요" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-hm-src">
-                                                <rect key="frame" x="37" y="12" width="254" height="20"/>
+                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="정책 이름이나 키워드를 검색하세요" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-hm-src" userLabel="Search Label">
+                                                <rect key="frame" x="37" y="12" width="258" height="20"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -207,13 +207,13 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-hm-flt" userLabel="Filter Button">
                                         <rect key="frame" x="333" y="97" width="44" height="44"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="44" id="cst-hm-btn-w"/>
                                             <constraint firstAttribute="height" constant="44" id="cst-hm-btn-h"/>
+                                            <constraint firstAttribute="width" constant="44" id="cst-hm-btn-w"/>
                                         </constraints>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" image="slider.horizontal.3" catalog="system"/>
                                     </button>
-                                    <label opaque="NO" userLabel="Section Label" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="전체 정책" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-hm-sec">
+                                    <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="전체 정책" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-hm-sec" userLabel="Section Label">
                                         <rect key="frame" x="16" y="157" width="361" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
@@ -236,16 +236,18 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tbl-hm-001">
-                                <rect key="frame" x="0.0" y="180" width="393" height="638"/>
+                                <rect key="frame" x="0.0" y="190" width="393" height="545"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="act-hm-001">
-                                <rect key="frame" x="186.6" y="416" width="20" height="20"/>
+                                <rect key="frame" x="186.66666666666666" y="416" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="2un-ED-grl"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="act-hm-001" firstAttribute="centerX" secondItem="6Lz-x5-HWn" secondAttribute="centerX" id="cst-hm-act-001"/>
+                            <constraint firstItem="act-hm-001" firstAttribute="centerY" secondItem="6Lz-x5-HWn" secondAttribute="centerY" id="cst-hm-act-002"/>
                             <constraint firstItem="vi-hm-hdr" firstAttribute="top" secondItem="6Lz-x5-HWn" secondAttribute="top" id="cst-hm-lay-001"/>
                             <constraint firstItem="vi-hm-hdr" firstAttribute="leading" secondItem="6Lz-x5-HWn" secondAttribute="leading" id="cst-hm-lay-002"/>
                             <constraint firstItem="vi-hm-hdr" firstAttribute="trailing" secondItem="6Lz-x5-HWn" secondAttribute="trailing" id="cst-hm-lay-003"/>
@@ -253,20 +255,18 @@
                             <constraint firstItem="tbl-hm-001" firstAttribute="leading" secondItem="2un-ED-grl" secondAttribute="leading" id="cst-hm-lay-005"/>
                             <constraint firstItem="tbl-hm-001" firstAttribute="trailing" secondItem="2un-ED-grl" secondAttribute="trailing" id="cst-hm-lay-006"/>
                             <constraint firstItem="tbl-hm-001" firstAttribute="bottom" secondItem="2un-ED-grl" secondAttribute="bottom" id="cst-hm-lay-007"/>
-                            <constraint firstItem="act-hm-001" firstAttribute="centerX" secondItem="6Lz-x5-HWn" secondAttribute="centerX" id="cst-hm-act-001"/>
-                            <constraint firstItem="act-hm-001" firstAttribute="centerY" secondItem="6Lz-x5-HWn" secondAttribute="centerY" id="cst-hm-act-002"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="AOU-fE-Cnq"/>
                     <connections>
-                        <outlet property="tableView" destination="tbl-hm-001" id="out-hm-001"/>
+                        <outlet property="activityIndicator" destination="act-hm-001" id="out-hm-008"/>
+                        <outlet property="filterButton" destination="btn-hm-flt" id="out-hm-006"/>
                         <outlet property="headerView" destination="vi-hm-hdr" id="out-hm-002"/>
                         <outlet property="logoLabel" destination="lbl-hm-logo" id="out-hm-003"/>
                         <outlet property="searchBar" destination="vi-hm-sb" id="out-hm-004"/>
                         <outlet property="searchLabel" destination="lbl-hm-src" id="out-hm-005"/>
-                        <outlet property="filterButton" destination="btn-hm-flt" id="out-hm-006"/>
                         <outlet property="sectionLabel" destination="lbl-hm-sec" id="out-hm-007"/>
-                        <outlet property="activityIndicator" destination="act-hm-001" id="out-hm-008"/>
+                        <outlet property="tableView" destination="tbl-hm-001" id="out-hm-001"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CjL-Vs-7YR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -292,11 +292,11 @@
             </objects>
             <point key="canvasLocation" x="10" y="408"/>
         </scene>
-        <!--Item 1-->
+        <!--홈-->
         <scene sceneID="2LT-Gg-sYM">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3a2-VO-VE1" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item 1" id="cFn-bi-IhA"/>
+                    <tabBarItem key="tabBarItem" title="홈" image="house" catalog="system" id="cFn-bi-IhA"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="UUd-p2-u7f">
                         <rect key="frame" x="0.0" y="118" width="393" height="54"/>
@@ -311,11 +311,11 @@
             </objects>
             <point key="canvasLocation" x="1921" y="-327"/>
         </scene>
-        <!--Item 2-->
+        <!--알림-->
         <scene sceneID="KTA-EH-MkX">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="jfk-b3-goX" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item 2" id="S4v-MT-Qtr"/>
+                    <tabBarItem key="tabBarItem" title="알림" image="bell" catalog="system" id="S4v-MT-Qtr"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Lhf-Rf-ACx">
                         <rect key="frame" x="0.0" y="118" width="393" height="54"/>
@@ -339,11 +339,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tbl-src-001">
-                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
+                                <rect key="frame" x="0.0" y="118" width="393" height="666"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="act-src-001">
-                                <rect key="frame" x="186.6" y="416" width="20" height="20"/>
+                                <rect key="frame" x="186.66666666666666" y="416" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="src-01-sf1"/>
@@ -358,8 +358,8 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="tableView" destination="tbl-src-001" id="out-src-001"/>
                         <outlet property="activityIndicator" destination="act-src-001" id="out-src-002"/>
+                        <outlet property="tableView" destination="tbl-src-001" id="out-src-001"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="src-01-pl1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -375,20 +375,20 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scr-dtl-001">
-                                <rect key="frame" x="0.0" y="59" width="393" height="693"/>
+                                <rect key="frame" x="0.0" y="118" width="393" height="600"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="stk-dtl-001">
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="200"/>
                                         <subviews>
-                                            <label opaque="NO" userLabel="Category Badge" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lbl-dtl-cat">
-                                                <rect key="frame" x="0.0" y="0.0" width="393" height="20.333333333333332"/>
+                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lbl-dtl-cat" userLabel="Category Badge">
+                                                <rect key="frame" x="0.0" y="0.0" width="393" height="179.66666666666666"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userLabel="Title Label" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lbl-dtl-tit">
-                                                <rect key="frame" x="0.0" y="20.333333333333332" width="393" height="20.333333333333332"/>
+                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lbl-dtl-tit" userLabel="Title Label">
+                                                <rect key="frame" x="0.0" y="179.66666666666666" width="393" height="20.333333333333343"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
@@ -406,31 +406,31 @@
                                 </constraints>
                             </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bot-dtl-001" userLabel="Bottom Bar">
-                                <rect key="frame" x="0.0" y="752" width="393" height="66"/>
+                                <rect key="frame" x="0.0" y="718" width="393" height="66"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-dtl-scr" userLabel="Scrap Button">
                                         <rect key="frame" x="16" y="11" width="44" height="44"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="44" id="cst-btn-dtl-w"/>
                                             <constraint firstAttribute="height" constant="44" id="cst-btn-dtl-h"/>
+                                            <constraint firstAttribute="width" constant="44" id="cst-btn-dtl-w"/>
                                         </constraints>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="S"/>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-dtl-apl" userLabel="Apply Button">
-                                        <rect key="frame" x="76" y="11" width="301" height="44"/>
+                                        <rect key="frame" x="76" y="16.000000000000004" width="301" height="34.333333333333343"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Apply"/>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
+                                    <constraint firstAttribute="height" constant="66" id="cst-dtl-bot-h"/>
                                     <constraint firstItem="btn-dtl-scr" firstAttribute="centerY" secondItem="bot-dtl-001" secondAttribute="centerY" id="cst-dtl-sub-001"/>
                                     <constraint firstItem="btn-dtl-scr" firstAttribute="leading" secondItem="bot-dtl-001" secondAttribute="leading" constant="16" id="cst-dtl-sub-002"/>
                                     <constraint firstItem="btn-dtl-apl" firstAttribute="centerY" secondItem="bot-dtl-001" secondAttribute="centerY" id="cst-dtl-sub-003"/>
                                     <constraint firstItem="btn-dtl-apl" firstAttribute="leading" secondItem="btn-dtl-scr" secondAttribute="trailing" constant="16" id="cst-dtl-sub-004"/>
                                     <constraint firstItem="btn-dtl-apl" firstAttribute="trailing" secondItem="bot-dtl-001" secondAttribute="trailing" constant="-16" id="cst-dtl-sub-005"/>
-                                    <constraint firstAttribute="height" constant="66" id="cst-dtl-bot-h"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -447,13 +447,13 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="scrollView" destination="scr-dtl-001" id="out-dtl-001"/>
-                        <outlet property="contentStack" destination="stk-dtl-001" id="out-dtl-002"/>
-                        <outlet property="categoryLabel" destination="lbl-dtl-cat" id="out-dtl-003"/>
-                        <outlet property="titleLabel" destination="lbl-dtl-tit" id="out-dtl-004"/>
-                        <outlet property="scrapButton" destination="btn-dtl-scr" id="out-dtl-005"/>
                         <outlet property="applyButton" destination="btn-dtl-apl" id="out-dtl-006"/>
                         <outlet property="bottomBar" destination="bot-dtl-001" id="out-dtl-007"/>
+                        <outlet property="categoryLabel" destination="lbl-dtl-cat" id="out-dtl-003"/>
+                        <outlet property="contentStack" destination="stk-dtl-001" id="out-dtl-002"/>
+                        <outlet property="scrapButton" destination="btn-dtl-scr" id="out-dtl-005"/>
+                        <outlet property="scrollView" destination="scr-dtl-001" id="out-dtl-001"/>
+                        <outlet property="titleLabel" destination="lbl-dtl-tit" id="out-dtl-004"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dtl-01-pl1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -469,7 +469,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scr-flt-001">
-                                <rect key="frame" x="0.0" y="59" width="393" height="693"/>
+                                <rect key="frame" x="0.0" y="118" width="393" height="600"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vi-flt-con">
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="400"/>
@@ -509,7 +509,7 @@
                                 </constraints>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-flt-apl">
-                                <rect key="frame" x="16" y="762" width="361" height="44"/>
+                                <rect key="frame" x="16" y="728" width="361" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="cst-btn-flt-h"/>
                                 </constraints>
@@ -530,11 +530,11 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="scrollView" destination="scr-flt-001" id="out-flt-001"/>
-                        <outlet property="contentView" destination="vi-flt-con" id="out-flt-002"/>
                         <outlet property="applyButton" destination="btn-flt-apl" id="out-flt-003"/>
-                        <outlet property="regionChipsContainer" destination="vi-flt-reg" id="out-flt-004"/>
                         <outlet property="categoryBentoContainer" destination="vi-flt-cat" id="out-flt-005"/>
+                        <outlet property="contentView" destination="vi-flt-con" id="out-flt-002"/>
+                        <outlet property="regionChipsContainer" destination="vi-flt-reg" id="out-flt-004"/>
+                        <outlet property="scrollView" destination="scr-flt-001" id="out-flt-001"/>
                         <outlet property="statusControl" destination="seg-flt-sts" id="out-flt-006"/>
                     </connections>
                 </viewController>
@@ -544,6 +544,11 @@
         </scene>
     </scenes>
     <resources>
+        <image name="bell" catalog="system" width="125" height="128"/>
+        <image name="house" catalog="system" width="128" height="104"/>
+        <image name="magnifyingglass" catalog="system" width="128" height="117"/>
+        <image name="person" catalog="system" width="128" height="121"/>
+        <image name="slider.horizontal.3" catalog="system" width="128" height="99"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

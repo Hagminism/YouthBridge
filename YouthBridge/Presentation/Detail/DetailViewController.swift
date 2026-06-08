@@ -117,7 +117,17 @@ final class DetailViewController: UIViewController {
         scrapButton.setImage(scrapImg, for: .normal)
         scrapButton.tintColor = state.isScrapped ? AppColor.primary : AppColor.textSecondary
 
-        applyButton.isHidden = policy.linkUrl == nil
+        if policy.linkUrl == nil {
+            applyButton.isEnabled = false
+            applyButton.backgroundColor = AppColor.tagBackground
+            applyButton.setTitle("신청 링크 없음", for: .disabled)
+            applyButton.setTitleColor(AppColor.textDisabled, for: .disabled)
+        } else {
+            applyButton.isEnabled = true
+            applyButton.backgroundColor = AppColor.primary
+            applyButton.setTitle("지금 신청하기", for: .normal)
+            applyButton.setTitleColor(.white, for: .normal)
+        }
 
         if state.isSummarizing {
             aiButton.configuration?.title = ""
