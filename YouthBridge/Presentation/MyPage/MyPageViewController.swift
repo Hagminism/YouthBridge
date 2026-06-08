@@ -135,17 +135,18 @@ final class MyPageViewController: UIViewController {
                 ])
             }
             
-            // "알림 설정" 등의 내부 레이블이 있다면 오토레이아웃 보정 및 스타일 지정
-            if let label = notifCard.subviews.first(where: { $0 is UILabel }) as? UILabel {
-                label.text = "알림 수신 설정"
-                label.font = AppFont.bodyMedium
-                label.textColor = AppColor.textPrimary
-                label.translatesAutoresizingMaskIntoConstraints = false
-                NSLayoutConstraint.activate([
-                    label.leadingAnchor.constraint(equalTo: notifCard.leadingAnchor, constant: 20),
-                    label.centerYAnchor.constraint(equalTo: notifCard.centerYAnchor)
-                ])
-            }
+            // "알림 설정" 타이틀 레이블 동적 생성 및 추가
+            let notifLabel = UILabel()
+            notifLabel.text = "알림 설정"
+            notifLabel.font = AppFont.bodyMedium
+            notifLabel.textColor = AppColor.textPrimary
+            notifLabel.translatesAutoresizingMaskIntoConstraints = false
+            notifCard.addSubview(notifLabel)
+            
+            NSLayoutConstraint.activate([
+                notifLabel.leadingAnchor.constraint(equalTo: notifCard.leadingAnchor, constant: 20),
+                notifLabel.centerYAnchor.constraint(equalTo: notifCard.centerYAnchor)
+            ])
         }
 
         if let savedCollectionView = savedCollectionView {
@@ -195,6 +196,11 @@ final class MyPageViewController: UIViewController {
             savedCollectionView.register(SavedPolicyCell.self, forCellWithReuseIdentifier: SavedPolicyCell.reuseID)
             savedCollectionView.dataSource = self
             savedCollectionView.delegate = self
+            
+            if let layout = savedCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+                layout.minimumInteritemSpacing = 12
+                layout.minimumLineSpacing = 12
+            }
         }
         
         // 스택뷰 내부 카드 뷰들의 높이 제약조건 활성화
@@ -288,5 +294,13 @@ final class SavedPolicyCell: UICollectionViewCell {
             stack.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -14),
             stack.bottomAnchor.constraint(lessThanOrEqualTo: cardView.bottomAnchor, constant: -14),
         ])
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+extension MyPageViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = (collectionView.bounds.width - 12) / 2
+        return CGSize(width: width, height: 96)
     }
 }
