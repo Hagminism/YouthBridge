@@ -91,7 +91,7 @@ final class SearchViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate   = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        tableView.register(UINib(nibName: "PolicyCardCell", bundle: nil),  forCellReuseIdentifier: PolicyCardCell.reuseID)
+        tableView.register(PolicyCardCell.self, forCellReuseIdentifier: PolicyCardCell.reuseID)
     }
 
     private func setupActivityIndicator() {

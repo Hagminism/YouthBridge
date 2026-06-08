@@ -126,7 +126,7 @@ final class HomeViewController: UIViewController {
         tableView.backgroundColor = .clear
         tableView.separatorStyle  = .none
         tableView.contentInsetAdjustmentBehavior = .never
-        tableView.register(UINib(nibName: "PolicyCardCell", bundle: nil), forCellReuseIdentifier: PolicyCardCell.reuseID)
+        tableView.register(PolicyCardCell.self, forCellReuseIdentifier: PolicyCardCell.reuseID)
         tableView.dataSource = self
         tableView.delegate   = self
         tableView.refreshControl = refreshControl

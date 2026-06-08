@@ -64,10 +64,25 @@
                     <view key="view" contentMode="scaleToFill" id="6Lz-x5-HWn">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tbl-hm-001">
+                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="2un-ED-grl"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="tbl-hm-001" firstAttribute="top" secondItem="2un-ED-grl" secondAttribute="top" id="cst-hm-001"/>
+                            <constraint firstItem="tbl-hm-001" firstAttribute="leading" secondItem="2un-ED-grl" secondAttribute="leading" id="cst-hm-002"/>
+                            <constraint firstItem="tbl-hm-001" firstAttribute="trailing" secondItem="2un-ED-grl" secondAttribute="trailing" id="cst-hm-003"/>
+                            <constraint firstItem="tbl-hm-001" firstAttribute="bottom" secondItem="2un-ED-grl" secondAttribute="bottom" id="cst-hm-004"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="AOU-fE-Cnq"/>
+                    <connections>
+                        <outlet property="tableView" destination="tbl-hm-001" id="out-hm-001"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CjL-Vs-7YR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

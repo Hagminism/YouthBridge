@@ -4,29 +4,24 @@ final class PolicyCardCell: UITableViewCell {
     static let reuseID = "PolicyCardCell"
 
     // Shadow lives here (masksToBounds = false to show shadow)
-    @IBOutlet private weak var shadowContainer: UIView!
-    @IBOutlet private weak var cardView: UIView!
-    @IBOutlet private weak var urgentBar: UIView!
-    @IBOutlet private weak var dDayBadge: PaddedLabel!
-    @IBOutlet private weak var categoryBadge: PaddedLabel!
-    @IBOutlet private weak var titleLabel: UILabel!
-    @IBOutlet private weak var descLabel: UILabel!
-    @IBOutlet private weak var actionLabel: UILabel!
-
-    private let rippleView = UIView()
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        setup()
-    }
+    private let shadowContainer = UIView()
+    // Content lives here (masksToBounds = true to clip urgentBar + ripple)
+    private let cardView        = UIView()
+    private let urgentBar       = UIView()
+    private let rippleView      = UIView()
+    private let dDayBadge       = PaddedLabel(insets: UIEdgeInsets(top: 4, left: 10, bottom: 4, right: 10))
+    private let categoryBadge   = PaddedLabel(insets: UIEdgeInsets(top: 3, left: 8, bottom: 3, right: 8))
+    private let titleLabel      = UILabel()
+    private let descLabel       = UILabel()
+    private let actionLabel     = UILabel()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setup()
     }
-
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        setup()
     }
 
     override func layoutSubviews() {
@@ -80,8 +75,6 @@ final class PolicyCardCell: UITableViewCell {
         backgroundColor = .clear
         contentView.backgroundColor = .clear
 
-        guard shadowContainer != nil else { return }
-
         // Shadow container — no background, shadow only
         shadowContainer.backgroundColor = .clear
         shadowContainer.layer.shadowColor = UIColor.black.cgColor
@@ -89,6 +82,8 @@ final class PolicyCardCell: UITableViewCell {
         shadowContainer.layer.shadowOffset = CGSize(width: 0, height: 2)
         shadowContainer.layer.shadowRadius = 8
         shadowContainer.layer.masksToBounds = false
+        contentView.addSubview(shadowContainer)
+        shadowContainer.translatesAutoresizingMaskIntoConstraints = false
 
         // Card — clips all children (urgentBar, ripple, etc.)
         cardView.backgroundColor = AppColor.background
@@ -96,6 +91,57 @@ final class PolicyCardCell: UITableViewCell {
         cardView.layer.borderWidth = 1
         cardView.layer.borderColor = AppColor.border.cgColor
         cardView.layer.masksToBounds = true
+        shadowContainer.addSubview(cardView)
+        cardView.translatesAutoresizingMaskIntoConstraints = false
+
+        // Urgent bar — straight edges will be clipped by cardView's corner radius
+        urgentBar.isHidden = true
+        cardView.addSubview(urgentBar)
+        urgentBar.translatesAutoresizingMaskIntoConstraints = false
+
+        // D-Day badge
+        dDayBadge.font = AppFont.dDayBadge
+        dDayBadge.layer.cornerRadius = 6
+        dDayBadge.clipsToBounds = true
+        dDayBadge.textAlignment = .center
+        dDayBadge.setContentHuggingPriority(.required, for: .horizontal)
+        dDayBadge.setContentCompressionResistancePriority(.required, for: .horizontal)
+
+        // Category badge
+        categoryBadge.font = AppFont.categoryBadge
+        categoryBadge.textColor = AppColor.textTertiary
+        categoryBadge.backgroundColor = AppColor.tagBackground
+        categoryBadge.layer.cornerRadius = 5
+        categoryBadge.clipsToBounds = true
+        categoryBadge.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+
+        // Title
+        titleLabel.font = AppFont.policyTitle
+        titleLabel.textColor = AppColor.textPrimary
+        titleLabel.numberOfLines = 2
+
+        // Desc
+        descLabel.font = AppFont.caption
+        descLabel.textColor = AppColor.textSecondary
+        descLabel.numberOfLines = 2
+
+        // Action
+        actionLabel.font = AppFont.bodyMedium
+        actionLabel.textColor = AppColor.primary
+
+        let spacer = UIView()
+        spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+
+        let badgeRow = UIStackView(arrangedSubviews: [dDayBadge, spacer, categoryBadge])
+        badgeRow.axis = .horizontal
+        badgeRow.spacing = 6
+        badgeRow.alignment = .center
+
+        let stack = UIStackView(arrangedSubviews: [badgeRow, titleLabel, descLabel, actionLabel])
+        stack.axis = .vertical
+        stack.spacing = 8
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        cardView.addSubview(stack)
 
         // Ripple overlay — on top of everything, clipped by cardView
         rippleView.backgroundColor = .clear
@@ -104,6 +150,26 @@ final class PolicyCardCell: UITableViewCell {
         cardView.addSubview(rippleView)
 
         NSLayoutConstraint.activate([
+            shadowContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
+            shadowContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            shadowContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            shadowContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
+
+            cardView.topAnchor.constraint(equalTo: shadowContainer.topAnchor),
+            cardView.leadingAnchor.constraint(equalTo: shadowContainer.leadingAnchor),
+            cardView.trailingAnchor.constraint(equalTo: shadowContainer.trailingAnchor),
+            cardView.bottomAnchor.constraint(equalTo: shadowContainer.bottomAnchor),
+
+            urgentBar.topAnchor.constraint(equalTo: cardView.topAnchor),
+            urgentBar.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
+            urgentBar.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
+            urgentBar.heightAnchor.constraint(equalToConstant: 3),
+
+            stack.topAnchor.constraint(equalTo: urgentBar.bottomAnchor, constant: 14),
+            stack.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
+            stack.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
+            stack.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
+
             rippleView.topAnchor.constraint(equalTo: cardView.topAnchor),
             rippleView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
             rippleView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
