@@ -132,7 +132,7 @@
                         <outlet property="scrollView" destination="scr-myp-001" id="out-myp-001"/>
                         <outlet property="contentStack" destination="stk-myp-001" id="out-myp-002"/>
                         <outlet property="statsCard" destination="vi-myp-sta" id="out-myp-003"/>
-                        <outlet scrappedCountLabel="lbl-myp-cnt" destination="out-myp-004" id="out-myp-004"/>
+                        <outlet property="scrappedCountLabel" destination="lbl-myp-cnt" id="out-myp-004"/>
                         <outlet property="notifCard" destination="vi-myp-not" id="out-myp-005"/>
                         <outlet property="notifToggle" destination="swi-myp-not" id="out-myp-006"/>
                         <outlet property="savedCollectionView" destination="col-myp-sav" id="out-myp-007"/>
@@ -168,23 +168,105 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vi-hm-hdr" userLabel="Header View">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="180"/>
+                                <subviews>
+                                    <label opaque="NO" userLabel="Logo Label" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="YouthBridge" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-hm-logo">
+                                        <rect key="frame" x="150" y="59" width="93" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vi-hm-sb" userLabel="Search Bar">
+                                        <rect key="frame" x="16" y="97" width="303" height="44"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnifyingglass" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="img-hm-src">
+                                                <rect key="frame" x="12" y="14" width="17" height="16"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="17" id="cst-hm-img-w"/>
+                                                    <constraint firstAttribute="height" constant="17" id="cst-hm-img-h"/>
+                                                </constraints>
+                                            </imageView>
+                                            <label opaque="NO" userLabel="Search Label" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="정책 이름이나 키워드를 검색하세요" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-hm-src">
+                                                <rect key="frame" x="37" y="12" width="254" height="20"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstItem="img-hm-src" firstAttribute="leading" secondItem="vi-hm-sb" secondAttribute="leading" constant="12" id="cst-hm-sb-001"/>
+                                            <constraint firstItem="img-hm-src" firstAttribute="centerY" secondItem="vi-hm-sb" secondAttribute="centerY" id="cst-hm-sb-002"/>
+                                            <constraint firstItem="lbl-hm-src" firstAttribute="leading" secondItem="img-hm-src" secondAttribute="trailing" constant="8" id="cst-hm-sb-003"/>
+                                            <constraint firstItem="lbl-hm-src" firstAttribute="trailing" secondItem="vi-hm-sb" secondAttribute="trailing" constant="-12" id="cst-hm-sb-004"/>
+                                            <constraint firstItem="lbl-hm-src" firstAttribute="centerY" secondItem="vi-hm-sb" secondAttribute="centerY" id="cst-hm-sb-005"/>
+                                            <constraint firstAttribute="height" constant="44" id="cst-hm-sb-h"/>
+                                        </constraints>
+                                    </view>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-hm-flt" userLabel="Filter Button">
+                                        <rect key="frame" x="333" y="97" width="44" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="cst-hm-btn-w"/>
+                                            <constraint firstAttribute="height" constant="44" id="cst-hm-btn-h"/>
+                                        </constraints>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" image="slider.horizontal.3" catalog="system"/>
+                                    </button>
+                                    <label opaque="NO" userLabel="Section Label" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="전체 정책" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-hm-sec">
+                                        <rect key="frame" x="16" y="157" width="361" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="lbl-hm-logo" firstAttribute="top" secondItem="vi-hm-hdr" secondAttribute="top" constant="59" id="cst-hm-hdr-001"/>
+                                    <constraint firstItem="lbl-hm-logo" firstAttribute="centerX" secondItem="vi-hm-hdr" secondAttribute="centerX" id="cst-hm-hdr-002"/>
+                                    <constraint firstItem="vi-hm-sb" firstAttribute="top" secondItem="vi-hm-hdr" secondAttribute="top" constant="97" id="cst-hm-hdr-003"/>
+                                    <constraint firstItem="vi-hm-sb" firstAttribute="leading" secondItem="vi-hm-hdr" secondAttribute="leading" constant="16" id="cst-hm-hdr-004"/>
+                                    <constraint firstItem="vi-hm-sb" firstAttribute="trailing" secondItem="btn-hm-flt" secondAttribute="leading" constant="-10" id="cst-hm-hdr-005"/>
+                                    <constraint firstItem="btn-hm-flt" firstAttribute="trailing" secondItem="vi-hm-hdr" secondAttribute="trailing" constant="-16" id="cst-hm-hdr-006"/>
+                                    <constraint firstItem="btn-hm-flt" firstAttribute="centerY" secondItem="vi-hm-sb" secondAttribute="centerY" id="cst-hm-hdr-007"/>
+                                    <constraint firstItem="lbl-hm-sec" firstAttribute="top" secondItem="vi-hm-sb" secondAttribute="bottom" constant="16" id="cst-hm-hdr-008"/>
+                                    <constraint firstItem="lbl-hm-sec" firstAttribute="leading" secondItem="vi-hm-hdr" secondAttribute="leading" constant="16" id="cst-hm-hdr-009"/>
+                                    <constraint firstItem="lbl-hm-sec" firstAttribute="trailing" secondItem="vi-hm-hdr" secondAttribute="trailing" constant="-16" id="cst-hm-hdr-010"/>
+                                    <constraint firstAttribute="bottom" secondItem="lbl-hm-sec" secondAttribute="bottom" constant="12" id="cst-hm-hdr-011"/>
+                                </constraints>
+                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tbl-hm-001">
-                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
+                                <rect key="frame" x="0.0" y="180" width="393" height="638"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="act-hm-001">
+                                <rect key="frame" x="186.6" y="416" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="2un-ED-grl"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="tbl-hm-001" firstAttribute="top" secondItem="2un-ED-grl" secondAttribute="top" id="cst-hm-001"/>
-                            <constraint firstItem="tbl-hm-001" firstAttribute="leading" secondItem="2un-ED-grl" secondAttribute="leading" id="cst-hm-002"/>
-                            <constraint firstItem="tbl-hm-001" firstAttribute="trailing" secondItem="2un-ED-grl" secondAttribute="trailing" id="cst-hm-003"/>
-                            <constraint firstItem="tbl-hm-001" firstAttribute="bottom" secondItem="2un-ED-grl" secondAttribute="bottom" id="cst-hm-004"/>
+                            <constraint firstItem="vi-hm-hdr" firstAttribute="top" secondItem="6Lz-x5-HWn" secondAttribute="top" id="cst-hm-lay-001"/>
+                            <constraint firstItem="vi-hm-hdr" firstAttribute="leading" secondItem="6Lz-x5-HWn" secondAttribute="leading" id="cst-hm-lay-002"/>
+                            <constraint firstItem="vi-hm-hdr" firstAttribute="trailing" secondItem="6Lz-x5-HWn" secondAttribute="trailing" id="cst-hm-lay-003"/>
+                            <constraint firstItem="tbl-hm-001" firstAttribute="top" secondItem="vi-hm-hdr" secondAttribute="bottom" id="cst-hm-lay-004"/>
+                            <constraint firstItem="tbl-hm-001" firstAttribute="leading" secondItem="2un-ED-grl" secondAttribute="leading" id="cst-hm-lay-005"/>
+                            <constraint firstItem="tbl-hm-001" firstAttribute="trailing" secondItem="2un-ED-grl" secondAttribute="trailing" id="cst-hm-lay-006"/>
+                            <constraint firstItem="tbl-hm-001" firstAttribute="bottom" secondItem="2un-ED-grl" secondAttribute="bottom" id="cst-hm-lay-007"/>
+                            <constraint firstItem="act-hm-001" firstAttribute="centerX" secondItem="6Lz-x5-HWn" secondAttribute="centerX" id="cst-hm-act-001"/>
+                            <constraint firstItem="act-hm-001" firstAttribute="centerY" secondItem="6Lz-x5-HWn" secondAttribute="centerY" id="cst-hm-act-002"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="AOU-fE-Cnq"/>
                     <connections>
                         <outlet property="tableView" destination="tbl-hm-001" id="out-hm-001"/>
+                        <outlet property="headerView" destination="vi-hm-hdr" id="out-hm-002"/>
+                        <outlet property="logoLabel" destination="lbl-hm-logo" id="out-hm-003"/>
+                        <outlet property="searchBar" destination="vi-hm-sb" id="out-hm-004"/>
+                        <outlet property="searchLabel" destination="lbl-hm-src" id="out-hm-005"/>
+                        <outlet property="filterButton" destination="btn-hm-flt" id="out-hm-006"/>
+                        <outlet property="sectionLabel" destination="lbl-hm-sec" id="out-hm-007"/>
+                        <outlet property="activityIndicator" destination="act-hm-001" id="out-hm-008"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CjL-Vs-7YR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
