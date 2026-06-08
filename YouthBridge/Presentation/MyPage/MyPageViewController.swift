@@ -159,17 +159,13 @@ final class MyPageViewController: UIViewController {
                 savedContainer.layer.borderWidth = 1
                 savedContainer.layer.borderColor = AppColor.border.cgColor
                 
-                // container 내의 타이틀 레이블(savedSectionLabel)과 emptyLabel 오토레이아웃 및 스타일 보정
-                if let savedSectionLabel = savedSectionLabel {
-                    savedSectionLabel.text = "저장된 정책"
-                    savedSectionLabel.font = AppFont.policyTitle
-                    savedSectionLabel.textColor = AppColor.textPrimary
-                    savedSectionLabel.translatesAutoresizingMaskIntoConstraints = false
-                    NSLayoutConstraint.activate([
-                        savedSectionLabel.topAnchor.constraint(equalTo: savedContainer.topAnchor, constant: 20),
-                        savedSectionLabel.leadingAnchor.constraint(equalTo: savedContainer.leadingAnchor, constant: 20)
-                    ])
-                }
+                // "저장된 정책" 타이틀 레이블 동적 생성 및 추가
+                let titleLabel = UILabel()
+                titleLabel.text = "저장된 정책"
+                titleLabel.font = AppFont.policyTitle
+                titleLabel.textColor = AppColor.textPrimary
+                titleLabel.translatesAutoresizingMaskIntoConstraints = false
+                savedContainer.addSubview(titleLabel)
                 
                 if let emptyLabel = emptyLabel {
                     emptyLabel.text = "저장한 정책이 없습니다."
@@ -183,7 +179,10 @@ final class MyPageViewController: UIViewController {
                 }
                 
                 NSLayoutConstraint.activate([
-                    savedCollectionView.topAnchor.constraint(equalTo: savedSectionLabel?.bottomAnchor ?? savedContainer.topAnchor, constant: 12),
+                    titleLabel.topAnchor.constraint(equalTo: savedContainer.topAnchor, constant: 20),
+                    titleLabel.leadingAnchor.constraint(equalTo: savedContainer.leadingAnchor, constant: 20),
+                    
+                    savedCollectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
                     savedCollectionView.leadingAnchor.constraint(equalTo: savedContainer.leadingAnchor, constant: 20),
                     savedCollectionView.trailingAnchor.constraint(equalTo: savedContainer.trailingAnchor, constant: -20),
                     savedCollectionView.bottomAnchor.constraint(equalTo: savedContainer.bottomAnchor, constant: -20),
