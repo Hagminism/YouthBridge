@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 final class DIContainer {
     static let shared = DIContainer()
@@ -29,4 +30,39 @@ final class DIContainer {
     }
     func makeMyPageViewModel()      -> MyPageViewModel      { MyPageViewModel(scrapUseCase: scrapPolicyUseCase) }
     func makeNotificationsViewModel() -> NotificationsViewModel { NotificationsViewModel() }
+
+    // MARK: - View Controllers (Storyboard Instantiation with Creator Blocks)
+    func makeDetailViewController(policy: Policy) -> DetailViewController {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        return sb.instantiateViewController(identifier: "DetailViewController") { coder in
+            DetailViewController(coder: coder, policy: policy)
+        }
+    }
+
+    func makeFilterViewController(current: FilterState) -> FilterViewController {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        return sb.instantiateViewController(identifier: "FilterViewController") { coder in
+            FilterViewController(coder: coder, currentFilter: current)
+        }
+    }
+
+    func makeHomeViewController() -> HomeViewController {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        return sb.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
+    }
+
+    func makeSearchViewController() -> SearchViewController {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        return sb.instantiateViewController(withIdentifier: "SearchViewController") as! SearchViewController
+    }
+
+    func makeNotificationsViewController() -> NotificationsViewController {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        return sb.instantiateViewController(withIdentifier: "NotificationsViewController") as! NotificationsViewController
+    }
+
+    func makeMyPageViewController() -> MyPageViewController {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        return sb.instantiateViewController(withIdentifier: "MyPageViewController") as! MyPageViewController
+    }
 }

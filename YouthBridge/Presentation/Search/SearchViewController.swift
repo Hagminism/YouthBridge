@@ -7,8 +7,8 @@ final class SearchViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
 
     private let searchController  = UISearchController(searchResultsController: nil)
-    private let tableView         = UITableView(frame: .zero, style: .grouped)
-    private let activityIndicator = UIActivityIndicatorView(style: .medium)
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     private let filterBarButton   = UIBarButtonItem()
 
     override func viewDidLoad() {
@@ -30,7 +30,7 @@ final class SearchViewController: UIViewController {
         viewModel.$state
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
-                self?.tableView.reloadData()
+                self?.tableView?.reloadData()
                 self?.updateFilterButton(active: state.isFilterActive)
             }
             .store(in: &cancellables)
@@ -39,8 +39,9 @@ final class SearchViewController: UIViewController {
             .map(\.isSearching)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isSearching in
-                if isSearching { self?.activityIndicator.startAnimating() }
-                else           { self?.activityIndicator.stopAnimating() }
+                guard let self = self else { return }
+                if isSearching { self.activityIndicator?.startAnimating() }
+                else           { self.activityIndicator?.stopAnimating() }
             }
             .store(in: &cancellables)
     }
@@ -51,7 +52,7 @@ final class SearchViewController: UIViewController {
             .sink { [weak self] effect in
                 switch effect {
                 case .navigateToDetail(let policy):
-                    let vc = DetailViewController(policy: policy)
+                    let vc = DIContainer.shared.makeDetailViewController(policy: policy)
                     self?.navigationController?.pushViewController(vc, animated: true)
                 }
             }
@@ -85,36 +86,24 @@ final class SearchViewController: UIViewController {
     }
 
     private func setupTableView() {
+        guard let tableView = tableView else { return }
         tableView.backgroundColor = AppColor.background
         tableView.dataSource = self
         tableView.delegate   = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        tableView.register(PolicyCardCell.self,  forCellReuseIdentifier: PolicyCardCell.reuseID)
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-        ])
+        tableView.register(UINib(nibName: "PolicyCardCell", bundle: nil),  forCellReuseIdentifier: PolicyCardCell.reuseID)
     }
 
     private func setupActivityIndicator() {
+        guard let activityIndicator = activityIndicator else { return }
         activityIndicator.hidesWhenStopped = true
         activityIndicator.color = AppColor.primary
-        view.addSubview(activityIndicator)
-        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-        ])
     }
 
     // MARK: - Actions
 
-    @objc private func filterTapped() {
-        let vc = FilterViewController(currentFilter: viewModel.state.appliedFilter)
+    @IBAction private func filterTapped() {
+        let vc = DIContainer.shared.makeFilterViewController(current: viewModel.state.appliedFilter)
         vc.onApply = { [weak self] filter in
             self?.viewModel.onAction(.applyFilter(filter))
         }

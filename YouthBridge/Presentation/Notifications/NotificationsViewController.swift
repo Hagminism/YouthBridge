@@ -5,7 +5,7 @@ final class NotificationsViewController: UIViewController {
 
     private var viewModel: NotificationsViewModel!
     private var cancellables = Set<AnyCancellable>()
-    private let tableView = UITableView()
+    @IBOutlet private weak var tableView: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,24 +23,16 @@ final class NotificationsViewController: UIViewController {
     }
 
     private func setupTableView() {
+        guard let tableView = tableView else { return }
         tableView.backgroundColor = .clear
         tableView.separatorStyle  = .none
         tableView.register(NotificationCell.self, forCellReuseIdentifier: NotificationCell.reuseID)
         tableView.dataSource = self
         tableView.delegate   = self
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
 
         // Header
         let headerView = buildHeaderView()
         tableView.tableHeaderView = headerView
-
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-        ])
     }
 
     private func buildHeaderView() -> UIView {
@@ -74,11 +66,11 @@ final class NotificationsViewController: UIViewController {
     private func bindState() {
         viewModel.$state
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.tableView.reloadData() }
+            .sink { [weak self] _ in self?.tableView?.reloadData() }
             .store(in: &cancellables)
     }
 
-    @objc private func markAllTapped() { viewModel.onAction(.markAllRead) }
+    @IBAction private func markAllTapped() { viewModel.onAction(.markAllRead) }
 }
 
 extension NotificationsViewController: UITableViewDataSource, UITableViewDelegate {
@@ -116,7 +108,10 @@ final class NotificationCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setup()
     }
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
 
     func configure(with item: NotificationItem) {
         titleLabel.text = item.title
