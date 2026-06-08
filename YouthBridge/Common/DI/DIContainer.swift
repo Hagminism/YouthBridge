@@ -31,19 +31,13 @@ final class DIContainer {
     func makeMyPageViewModel()      -> MyPageViewModel      { MyPageViewModel(scrapUseCase: scrapPolicyUseCase) }
     func makeNotificationsViewModel() -> NotificationsViewModel { NotificationsViewModel() }
 
-    // MARK: - View Controllers (Storyboard Instantiation with Creator Blocks)
+    // MARK: - View Controllers
     func makeDetailViewController(policy: Policy) -> DetailViewController {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
-        return sb.instantiateViewController(identifier: "DetailViewController") { coder in
-            DetailViewController(coder: coder, policy: policy)
-        }
+        DetailViewController(policy: policy)
     }
 
     func makeFilterViewController(current: FilterState) -> FilterViewController {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
-        return sb.instantiateViewController(identifier: "FilterViewController") { coder in
-            FilterViewController(coder: coder, currentFilter: current)
-        }
+        FilterViewController(currentFilter: current)
     }
 
     func makeHomeViewController() -> HomeViewController {
