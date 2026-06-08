@@ -81,6 +81,22 @@ final class MyPageViewController: UIViewController {
             heightConstraint.isActive = false
         }
         
+        // 스택뷰 레이아웃 마진 설정으로 양옆 16pt, 상단 24pt, 하단 24pt 여백 부여 (상태바 침범 방지 및 좌우 여백 확보)
+        if let contentStack = contentStack {
+            contentStack.isLayoutMarginsRelativeArrangement = true
+            contentStack.layoutMargins = UIEdgeInsets(top: 24, left: 16, bottom: 24, right: 16)
+            contentStack.spacing = 16
+            
+            // "마이페이지" 상단 타이틀 레이블 동적 추가 (중복 방지)
+            if !contentStack.arrangedSubviews.contains(where: { ($0 as? UILabel)?.text == "마이페이지" }) {
+                let headerTitleLabel = UILabel()
+                headerTitleLabel.text = "마이페이지"
+                headerTitleLabel.font = AppFont.heading1
+                headerTitleLabel.textColor = AppColor.textPrimary
+                contentStack.insertArrangedSubview(headerTitleLabel, at: 0)
+            }
+        }
+        
         // 각 카드 뷰의 Auto Layout 활성화 (translatesAutoresizingMaskIntoConstraints = false)
         statsCard?.translatesAutoresizingMaskIntoConstraints = false
         notifCard?.translatesAutoresizingMaskIntoConstraints = false
@@ -92,6 +108,8 @@ final class MyPageViewController: UIViewController {
             // statsCard 내부 레이블 오토레이아웃 설정 보정
             if let scrappedCountLabel = scrappedCountLabel {
                 scrappedCountLabel.translatesAutoresizingMaskIntoConstraints = false
+                scrappedCountLabel.textColor = .white
+                scrappedCountLabel.font = AppFont.heading2
                 NSLayoutConstraint.activate([
                     scrappedCountLabel.leadingAnchor.constraint(equalTo: statsCard.leadingAnchor, constant: 20),
                     scrappedCountLabel.trailingAnchor.constraint(equalTo: statsCard.trailingAnchor, constant: -20),
@@ -117,8 +135,11 @@ final class MyPageViewController: UIViewController {
                 ])
             }
             
-            // "알림 설정" 등의 내부 레이블이 있다면 오토레이아웃 보정
+            // "알림 설정" 등의 내부 레이블이 있다면 오토레이아웃 보정 및 스타일 지정
             if let label = notifCard.subviews.first(where: { $0 is UILabel }) as? UILabel {
+                label.text = "알림 수신 설정"
+                label.font = AppFont.bodyMedium
+                label.textColor = AppColor.textPrimary
                 label.translatesAutoresizingMaskIntoConstraints = false
                 NSLayoutConstraint.activate([
                     label.leadingAnchor.constraint(equalTo: notifCard.leadingAnchor, constant: 20),
@@ -132,16 +153,28 @@ final class MyPageViewController: UIViewController {
                 savedContainer.translatesAutoresizingMaskIntoConstraints = false
                 savedCollectionView.translatesAutoresizingMaskIntoConstraints = false
                 
-                // container 내의 타이틀 레이블(savedSectionLabel)과 emptyLabel 오토레이아웃 보정
+                // container 스타일 지정 (카드 형태로 배경 및 테두리 설정)
+                savedContainer.backgroundColor = AppColor.background
+                savedContainer.layer.cornerRadius = 16
+                savedContainer.layer.borderWidth = 1
+                savedContainer.layer.borderColor = AppColor.border.cgColor
+                
+                // container 내의 타이틀 레이블(savedSectionLabel)과 emptyLabel 오토레이아웃 및 스타일 보정
                 if let savedSectionLabel = savedSectionLabel {
+                    savedSectionLabel.text = "저장된 정책"
+                    savedSectionLabel.font = AppFont.policyTitle
+                    savedSectionLabel.textColor = AppColor.textPrimary
                     savedSectionLabel.translatesAutoresizingMaskIntoConstraints = false
                     NSLayoutConstraint.activate([
-                        savedSectionLabel.topAnchor.constraint(equalTo: savedContainer.topAnchor, constant: 16),
-                        savedSectionLabel.leadingAnchor.constraint(equalTo: savedContainer.leadingAnchor, constant: 16)
+                        savedSectionLabel.topAnchor.constraint(equalTo: savedContainer.topAnchor, constant: 20),
+                        savedSectionLabel.leadingAnchor.constraint(equalTo: savedContainer.leadingAnchor, constant: 20)
                     ])
                 }
                 
                 if let emptyLabel = emptyLabel {
+                    emptyLabel.text = "저장한 정책이 없습니다."
+                    emptyLabel.font = AppFont.bodyMedium
+                    emptyLabel.textColor = AppColor.textTertiary
                     emptyLabel.translatesAutoresizingMaskIntoConstraints = false
                     NSLayoutConstraint.activate([
                         emptyLabel.centerXAnchor.constraint(equalTo: savedContainer.centerXAnchor),
@@ -151,9 +184,9 @@ final class MyPageViewController: UIViewController {
                 
                 NSLayoutConstraint.activate([
                     savedCollectionView.topAnchor.constraint(equalTo: savedSectionLabel?.bottomAnchor ?? savedContainer.topAnchor, constant: 12),
-                    savedCollectionView.leadingAnchor.constraint(equalTo: savedContainer.leadingAnchor, constant: 16),
-                    savedCollectionView.trailingAnchor.constraint(equalTo: savedContainer.trailingAnchor, constant: -16),
-                    savedCollectionView.bottomAnchor.constraint(equalTo: savedContainer.bottomAnchor, constant: -16),
+                    savedCollectionView.leadingAnchor.constraint(equalTo: savedContainer.leadingAnchor, constant: 20),
+                    savedCollectionView.trailingAnchor.constraint(equalTo: savedContainer.trailingAnchor, constant: -20),
+                    savedCollectionView.bottomAnchor.constraint(equalTo: savedContainer.bottomAnchor, constant: -20),
                     savedContainer.heightAnchor.constraint(equalToConstant: 280)
                 ])
             }
