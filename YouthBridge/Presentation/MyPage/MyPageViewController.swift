@@ -76,22 +76,101 @@ final class MyPageViewController: UIViewController {
     }
 
     private func setupUI() {
-        // Style static views
-        statsCard?.backgroundColor = AppColor.primary
-        statsCard?.layer.cornerRadius = 16
+        // 스택뷰 자체의 높이 고정 제약조건(height = 600)을 해제하여 내부 콘텐츠에 맞게 가변적으로 늘어나게 설정
+        if let heightConstraint = contentStack?.constraints.first(where: { $0.firstAttribute == .height }) {
+            heightConstraint.isActive = false
+        }
+        
+        // 각 카드 뷰의 Auto Layout 활성화 (translatesAutoresizingMaskIntoConstraints = false)
+        statsCard?.translatesAutoresizingMaskIntoConstraints = false
+        notifCard?.translatesAutoresizingMaskIntoConstraints = false
+        
+        if let statsCard = statsCard {
+            statsCard.backgroundColor = AppColor.primary
+            statsCard.layer.cornerRadius = 16
+            
+            // statsCard 내부 레이블 오토레이아웃 설정 보정
+            if let scrappedCountLabel = scrappedCountLabel {
+                scrappedCountLabel.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    scrappedCountLabel.leadingAnchor.constraint(equalTo: statsCard.leadingAnchor, constant: 20),
+                    scrappedCountLabel.trailingAnchor.constraint(equalTo: statsCard.trailingAnchor, constant: -20),
+                    scrappedCountLabel.centerYAnchor.constraint(equalTo: statsCard.centerYAnchor)
+                ])
+            }
+        }
 
-        notifCard?.backgroundColor = AppColor.background
-        notifCard?.layer.cornerRadius = 16
-        notifCard?.layer.borderWidth = 1
-        notifCard?.layer.borderColor = AppColor.border.cgColor
-        notifToggle?.onTintColor = AppColor.primary
+        if let notifCard = notifCard {
+            notifCard.backgroundColor = AppColor.background
+            notifCard.layer.cornerRadius = 16
+            notifCard.layer.borderWidth = 1
+            notifCard.layer.borderColor = AppColor.border.cgColor
+            
+            // notifCard 내부 토글 오토레이아웃 설정 보정
+            if let notifToggle = notifToggle {
+                notifToggle.translatesAutoresizingMaskIntoConstraints = false
+                notifToggle.onTintColor = AppColor.primary
+                
+                NSLayoutConstraint.activate([
+                    notifToggle.trailingAnchor.constraint(equalTo: notifCard.trailingAnchor, constant: -20),
+                    notifToggle.centerYAnchor.constraint(equalTo: notifCard.centerYAnchor)
+                ])
+            }
+            
+            // "알림 설정" 등의 내부 레이블이 있다면 오토레이아웃 보정
+            if let label = notifCard.subviews.first(where: { $0 is UILabel }) as? UILabel {
+                label.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    label.leadingAnchor.constraint(equalTo: notifCard.leadingAnchor, constant: 20),
+                    label.centerYAnchor.constraint(equalTo: notifCard.centerYAnchor)
+                ])
+            }
+        }
 
         if let savedCollectionView = savedCollectionView {
+            if let savedContainer = savedCollectionView.superview {
+                savedContainer.translatesAutoresizingMaskIntoConstraints = false
+                savedCollectionView.translatesAutoresizingMaskIntoConstraints = false
+                
+                // container 내의 타이틀 레이블(savedSectionLabel)과 emptyLabel 오토레이아웃 보정
+                if let savedSectionLabel = savedSectionLabel {
+                    savedSectionLabel.translatesAutoresizingMaskIntoConstraints = false
+                    NSLayoutConstraint.activate([
+                        savedSectionLabel.topAnchor.constraint(equalTo: savedContainer.topAnchor, constant: 16),
+                        savedSectionLabel.leadingAnchor.constraint(equalTo: savedContainer.leadingAnchor, constant: 16)
+                    ])
+                }
+                
+                if let emptyLabel = emptyLabel {
+                    emptyLabel.translatesAutoresizingMaskIntoConstraints = false
+                    NSLayoutConstraint.activate([
+                        emptyLabel.centerXAnchor.constraint(equalTo: savedContainer.centerXAnchor),
+                        emptyLabel.centerYAnchor.constraint(equalTo: savedContainer.centerYAnchor)
+                    ])
+                }
+                
+                NSLayoutConstraint.activate([
+                    savedCollectionView.topAnchor.constraint(equalTo: savedSectionLabel?.bottomAnchor ?? savedContainer.topAnchor, constant: 12),
+                    savedCollectionView.leadingAnchor.constraint(equalTo: savedContainer.leadingAnchor, constant: 16),
+                    savedCollectionView.trailingAnchor.constraint(equalTo: savedContainer.trailingAnchor, constant: -16),
+                    savedCollectionView.bottomAnchor.constraint(equalTo: savedContainer.bottomAnchor, constant: -16),
+                    savedContainer.heightAnchor.constraint(equalToConstant: 280)
+                ])
+            }
+            
             savedCollectionView.backgroundColor = .clear
             savedCollectionView.showsHorizontalScrollIndicator = false
             savedCollectionView.register(SavedPolicyCell.self, forCellWithReuseIdentifier: SavedPolicyCell.reuseID)
             savedCollectionView.dataSource = self
             savedCollectionView.delegate = self
+        }
+        
+        // 스택뷰 내부 카드 뷰들의 높이 제약조건 활성화
+        if let statsCard = statsCard, let notifCard = notifCard {
+            NSLayoutConstraint.activate([
+                statsCard.heightAnchor.constraint(equalToConstant: 100),
+                notifCard.heightAnchor.constraint(equalToConstant: 80)
+            ])
         }
     }
 

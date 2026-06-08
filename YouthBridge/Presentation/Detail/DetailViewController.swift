@@ -57,6 +57,11 @@ final class DetailViewController: UIViewController {
         setupNavBar()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        restoreNavBar()
+    }
+
     // MARK: - Bind
     private func bindState() {
         viewModel.$state
@@ -149,6 +154,7 @@ final class DetailViewController: UIViewController {
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.tintColor = AppColor.textPrimary
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "chevron.left"),
@@ -162,6 +168,19 @@ final class DetailViewController: UIViewController {
         )
         navigationItem.rightBarButtonItem?.tintColor = AppColor.textPrimary
         view.backgroundColor = AppColor.backgroundSecondary
+    }
+
+    private func restoreNavBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = AppColor.background
+        appearance.titleTextAttributes = [.foregroundColor: AppColor.textPrimary]
+        appearance.largeTitleTextAttributes = [.foregroundColor: AppColor.textPrimary]
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.tintColor = nil
     }
 
     // MARK: - Layout
