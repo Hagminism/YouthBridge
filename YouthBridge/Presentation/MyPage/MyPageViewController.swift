@@ -39,6 +39,7 @@ final class MyPageViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
         viewModel.onAction(.viewDidLoad)
     }
 
@@ -91,7 +92,7 @@ final class MyPageViewController: UIViewController {
             if !contentStack.arrangedSubviews.contains(where: { ($0 as? UILabel)?.text == "마이페이지" }) {
                 let headerTitleLabel = UILabel()
                 headerTitleLabel.text = "마이페이지"
-                headerTitleLabel.font = AppFont.heading1
+                headerTitleLabel.font = AppFont.heading2
                 headerTitleLabel.textColor = AppColor.textPrimary
                 contentStack.insertArrangedSubview(headerTitleLabel, at: 0)
             }
@@ -163,7 +164,7 @@ final class MyPageViewController: UIViewController {
                 // "저장된 정책" 타이틀 레이블 동적 생성 및 추가
                 let titleLabel = UILabel()
                 titleLabel.text = "저장된 정책"
-                titleLabel.font = AppFont.policyTitle
+                titleLabel.font = AppFont.heading2
                 titleLabel.textColor = AppColor.textPrimary
                 titleLabel.translatesAutoresizingMaskIntoConstraints = false
                 savedContainer.addSubview(titleLabel)
