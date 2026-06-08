@@ -92,7 +92,7 @@ final class MyPageViewController: UIViewController {
             if !contentStack.arrangedSubviews.contains(where: { ($0 as? UILabel)?.text == "마이페이지" }) {
                 let headerTitleLabel = UILabel()
                 headerTitleLabel.text = "마이페이지"
-                headerTitleLabel.font = AppFont.heading2
+                headerTitleLabel.font = AppFont.heading1
                 headerTitleLabel.textColor = AppColor.textPrimary
                 contentStack.insertArrangedSubview(headerTitleLabel, at: 0)
             }
@@ -139,7 +139,7 @@ final class MyPageViewController: UIViewController {
             // "알림 설정" 타이틀 레이블 동적 생성 및 추가
             let notifLabel = UILabel()
             notifLabel.text = "알림 설정"
-            notifLabel.font = AppFont.bodyMedium
+            notifLabel.font = AppFont.heading2
             notifLabel.textColor = AppColor.textPrimary
             notifLabel.translatesAutoresizingMaskIntoConstraints = false
             notifCard.addSubview(notifLabel)
