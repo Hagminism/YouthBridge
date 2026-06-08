@@ -323,6 +323,12 @@ final class FilterViewController: UIViewController {
             btn.layer.borderColor = isSelected ? (meta?.color ?? AppColor.primary).cgColor : AppColor.border.cgColor
         }
 
+        // 정책 상태 선택 인덱스 복원
+        let statuses: [FilterState.PolicyStatus] = [.active, .expired, .all]
+        if let index = statuses.firstIndex(of: state.policyStatus) {
+            statusControl?.selectedSegmentIndex = index
+        }
+
         let summary = viewModel.selectionSummary
         applyButton.setTitle(summary.isEmpty ? "필터 적용하기" : summary, for: .normal)
     }
