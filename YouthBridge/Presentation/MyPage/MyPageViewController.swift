@@ -250,12 +250,13 @@ final class MyPageViewController: UIViewController {
         statsCard.addSubview(subtitleLabel)
         
         // 우측 개수 레이블
-        scrappedCountLabel = UILabel()
-        scrappedCountLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-        scrappedCountLabel.textColor = AppColor.primary
-        scrappedCountLabel.textAlignment = .right
-        scrappedCountLabel.translatesAutoresizingMaskIntoConstraints = false
-        statsCard.addSubview(scrappedCountLabel)
+        let countLabel = UILabel()
+        countLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        countLabel.textColor = AppColor.primaryBlue2
+        countLabel.textAlignment = .right
+        countLabel.translatesAutoresizingMaskIntoConstraints = false
+        statsCard.addSubview(countLabel)
+        self.scrappedCountLabel = countLabel
         
         NSLayoutConstraint.activate([
             statsCard.heightAnchor.constraint(equalToConstant: 76),
@@ -272,15 +273,15 @@ final class MyPageViewController: UIViewController {
             
             titleLabel.topAnchor.constraint(equalTo: statsCard.topAnchor, constant: 16),
             titleLabel.leadingAnchor.constraint(equalTo: iconBg.trailingAnchor, constant: 14),
-            titleLabel.trailingAnchor.constraint(equalTo: scrappedCountLabel.leadingAnchor, constant: -8),
+            titleLabel.trailingAnchor.constraint(equalTo: countLabel.leadingAnchor, constant: -8),
             
             subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
             subtitleLabel.leadingAnchor.constraint(equalTo: iconBg.trailingAnchor, constant: 14),
-            subtitleLabel.trailingAnchor.constraint(equalTo: scrappedCountLabel.leadingAnchor, constant: -8),
+            subtitleLabel.trailingAnchor.constraint(equalTo: countLabel.leadingAnchor, constant: -8),
             
-            scrappedCountLabel.trailingAnchor.constraint(equalTo: statsCard.trailingAnchor, constant: -20),
-            scrappedCountLabel.centerYAnchor.constraint(equalTo: statsCard.centerYAnchor),
-            scrappedCountLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 40)
+            countLabel.trailingAnchor.constraint(equalTo: statsCard.trailingAnchor, constant: -20),
+            countLabel.centerYAnchor.constraint(equalTo: statsCard.centerYAnchor),
+            countLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 40)
         ])
     }
 
