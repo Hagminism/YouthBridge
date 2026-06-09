@@ -16,6 +16,11 @@ final class NotificationsViewController: UIViewController {
         viewModel.onAction(.viewDidLoad)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.onAction(.viewDidLoad)
+    }
+
     private func setupNavBar() {
         title = "활동"
         view.backgroundColor = AppColor.backgroundSecondary

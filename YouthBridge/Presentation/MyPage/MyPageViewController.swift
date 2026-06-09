@@ -63,6 +63,19 @@ final class MyPageViewController: UIViewController {
                 case .navigateToDetail(let policy):
                     let vc = DIContainer.shared.makeDetailViewController(policy: policy)
                     self?.navigationController?.pushViewController(vc, animated: true)
+                case .showPermissionAlert:
+                    let alert = UIAlertController(
+                        title: "알림 권한 필요",
+                        message: "알림을 받으려면 시스템 설정에서 알림 권한을 허용해야 합니다. 설정 화면으로 이동하시겠습니까?",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+                    alert.addAction(UIAlertAction(title: "이동", style: .default) { _ in
+                        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+                        }
+                    })
+                    self?.present(alert, animated: true, completion: nil)
                 }
             }
             .store(in: &cancellables)
