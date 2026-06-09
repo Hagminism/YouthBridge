@@ -7,6 +7,7 @@ final class SearchViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
 
     private let headerContainer = UIView()
+    private let backButton = UIButton(type: .system)
     private let searchBar = UISearchBar()
     private let filterButton = UIButton(type: .system)
 
@@ -74,6 +75,12 @@ final class SearchViewController: UIViewController {
         headerContainer.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(headerContainer)
 
+        // Back button
+        backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        backButton.tintColor = AppColor.textPrimary
+        backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+
         // Search bar
         searchBar.searchBarStyle = .minimal
         searchBar.placeholder = "정책 이름이나 키워드를 검색하세요"
@@ -88,7 +95,7 @@ final class SearchViewController: UIViewController {
         filterButton.addTarget(self, action: #selector(filterTapped), for: .touchUpInside)
         filterButton.translatesAutoresizingMaskIntoConstraints = false
 
-        let stack = UIStackView(arrangedSubviews: [searchBar, filterButton])
+        let stack = UIStackView(arrangedSubviews: [backButton, searchBar, filterButton])
         stack.axis = .horizontal
         stack.spacing = 12
         stack.alignment = .center
@@ -105,6 +112,9 @@ final class SearchViewController: UIViewController {
             stack.trailingAnchor.constraint(equalTo: headerContainer.trailingAnchor, constant: -16),
             stack.bottomAnchor.constraint(equalTo: headerContainer.bottomAnchor, constant: -8),
             stack.heightAnchor.constraint(equalToConstant: 48),
+
+            backButton.widthAnchor.constraint(equalToConstant: 36),
+            backButton.heightAnchor.constraint(equalToConstant: 36),
 
             filterButton.widthAnchor.constraint(equalToConstant: 44),
             filterButton.heightAnchor.constraint(equalToConstant: 44)
@@ -148,6 +158,17 @@ final class SearchViewController: UIViewController {
     }
 
     // MARK: - Actions
+
+    @objc private func backTapped() {
+        UIView.animate(withDuration: 0.1, animations: {
+            self.backButton.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                self.backButton.transform = .identity
+            }
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
 
     @objc private func filterTapped() {
         UIView.animate(withDuration: 0.1, animations: {
