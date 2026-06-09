@@ -8,7 +8,7 @@ final class SearchViewController: UIViewController {
 
     private let headerContainer = UIView()
     private let searchBar = UISearchBar()
-    private let filterButton = UIButton(type: .custom)
+    private let filterButton = UIButton(type: .system)
 
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
@@ -112,7 +112,9 @@ final class SearchViewController: UIViewController {
     }
 
     private func updateFilterButton(active: Bool) {
-        filterButton.tintColor = active ? AppColor.primary : AppColor.textSecondary
+        // 홈 화면 필터 버튼 디자인과 일치하도록 파란색 틴트 및 연파란 배경을 항상 유지합니다.
+        filterButton.tintColor = AppColor.primary
+        filterButton.backgroundColor = AppColor.primary.withAlphaComponent(0.08)
     }
 
     private func setupTableView() {
@@ -148,17 +150,24 @@ final class SearchViewController: UIViewController {
     // MARK: - Actions
 
     @objc private func filterTapped() {
-        let vc = DIContainer.shared.makeFilterViewController(current: viewModel.state.appliedFilter)
-        vc.onApply = { [weak self] filter in
-            self?.viewModel.onAction(.applyFilter(filter))
+        UIView.animate(withDuration: 0.1, animations: {
+            self.filterButton.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                self.filterButton.transform = .identity
+            }
+            let vc = DIContainer.shared.makeFilterViewController(current: self.viewModel.state.appliedFilter)
+            vc.onApply = { [weak self] filter in
+                self?.viewModel.onAction(.applyFilter(filter))
+            }
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .pageSheet
+            if let sheet = nav.sheetPresentationController {
+                sheet.detents = [.large()]
+                sheet.prefersGrabberVisible = true
+            }
+            self.present(nav, animated: true)
         }
-        let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .pageSheet
-        if let sheet = nav.sheetPresentationController {
-            sheet.detents = [.large()]
-            sheet.prefersGrabberVisible = true
-        }
-        present(nav, animated: true)
     }
 }
 
