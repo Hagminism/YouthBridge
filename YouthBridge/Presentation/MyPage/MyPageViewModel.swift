@@ -6,6 +6,7 @@ struct MyPageState {
     var scrappedPolicies: [Policy] = []
     var notificationsEnabled: Bool = false
     var scrappedCount: Int { scrappedPolicies.count }
+    var recentViewedPolicies: [Policy] = []
 }
 
 enum MyPageAction {
@@ -13,11 +14,13 @@ enum MyPageAction {
     case toggleNotifications(Bool)
     case tapPolicy(Policy)
     case tapRemoveScrap(Policy)
+    case tapScrappedListCard
 }
 
 enum MyPageEffect {
     case navigateToDetail(Policy)
     case showPermissionAlert
+    case navigateToScrappedList
 }
 
 @MainActor
@@ -37,6 +40,7 @@ final class MyPageViewModel {
         case .viewDidLoad:
             loadScrapped()
             checkNotificationSettings()
+            loadRecentViewed()
         case .toggleNotifications(let enabled):
             if enabled {
                 UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
@@ -64,11 +68,17 @@ final class MyPageViewModel {
         case .tapRemoveScrap(let policy):
             scrapUseCase.toggle(policy)
             loadScrapped()
+        case .tapScrappedListCard:
+            effect.send(.navigateToScrappedList)
         }
     }
 
     private func loadScrapped() {
         state.scrappedPolicies = scrapUseCase.getScrapped()
+    }
+
+    private func loadRecentViewed() {
+        state.recentViewedPolicies = RecentPoliciesManager.shared.getAll()
     }
 
     private func checkNotificationSettings() {
@@ -92,3 +102,4 @@ final class MyPageViewModel {
         }
     }
 }
+

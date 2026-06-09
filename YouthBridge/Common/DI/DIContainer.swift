@@ -59,4 +59,8 @@ final class DIContainer {
         let sb = UIStoryboard(name: "Main", bundle: nil)
         return sb.instantiateViewController(withIdentifier: "MyPageViewController") as! MyPageViewController
     }
+
+    func makeScrappedPoliciesViewController() -> ScrappedPoliciesViewController {
+        return ScrappedPoliciesViewController()
+    }
 }

@@ -40,6 +40,7 @@ final class DetailViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         viewModel = DIContainer.shared.makeDetailViewModel(policy: policy)
         hidesBottomBarWhenPushed = true
+        RecentPoliciesManager.shared.add(policy: policy)
     }
     required init?(coder: NSCoder) { fatalError() }
 
