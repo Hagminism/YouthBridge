@@ -142,6 +142,7 @@ final class MyPageViewController: UIViewController {
             if let notifToggle = notifToggle {
                 notifToggle.translatesAutoresizingMaskIntoConstraints = false
                 notifToggle.onTintColor = AppColor.primary
+                notifToggle.addTarget(self, action: #selector(notifToggleChanged), for: .valueChanged)
                 
                 NSLayoutConstraint.activate([
                     notifToggle.trailingAnchor.constraint(equalTo: notifCard.trailingAnchor, constant: -20),
@@ -226,7 +227,7 @@ final class MyPageViewController: UIViewController {
         }
     }
 
-    @IBAction private func notifToggleChanged() {
+    @objc @IBAction private func notifToggleChanged() {
         guard let notifToggle = notifToggle else { return }
         viewModel.onAction(.toggleNotifications(notifToggle.isOn))
     }
