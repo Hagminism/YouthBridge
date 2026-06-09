@@ -30,7 +30,7 @@
 
 | 영역 | 적용 기술 / 프레임워크 | 설명 |
 |---|---|---|
-| **UI** | UIKit (완전 프로그래매틱) | 스토리보드를 배제하고 코드로만 화면 및 오토레이아웃 설계 |
+| **UI** | UIKit | 코드 기반 화면 및 오토레이아웃 설계 |
 | **Architecture** | MVVM + MVI + Clean Architecture | 액션(Action)과 상태(State) 중심의 단방향 데이터 흐름 제어 |
 | **Reactive** | Combine | 비동기 바인딩 및 데이터 스트림 처리 (`PassthroughSubject`, `@Published`) |
 | **Concurrency** | Swift Concurrency (async/await) | 안전하고 가독성 높은 비동기 API 통신 처리 |
