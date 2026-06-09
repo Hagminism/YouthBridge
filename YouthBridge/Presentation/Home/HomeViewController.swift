@@ -115,10 +115,58 @@ final class HomeViewController: UIViewController {
     }
 
     private func setupTopBar() {
-        guard let searchBar = searchBar else { return }
-        let tap = UITapGestureRecognizer(target: self, action: #selector(searchBarTapped))
-        searchBar.addGestureRecognizer(tap)
-        filterButton?.addTarget(self, action: #selector(filterTapped), for: .touchUpInside)
+        // 1. HeaderView 스타일링 (그림자 및 배경)
+        if let headerView = headerView {
+            headerView.backgroundColor = AppColor.background
+            headerView.layer.masksToBounds = false
+            headerView.layer.shadowColor = UIColor.black.cgColor
+            headerView.layer.shadowOpacity = 0.04
+            headerView.layer.shadowOffset = CGSize(width: 0, height: 4)
+            headerView.layer.shadowRadius = 8
+        }
+
+        // 2. LogoLabel 스타일링
+        if let logoLabel = logoLabel {
+            logoLabel.font = AppFont.logoTitle
+            logoLabel.textColor = AppColor.primary
+        }
+
+        // 3. SearchBar 컨테이너 스타일링
+        if let searchBar = searchBar {
+            searchBar.backgroundColor = AppColor.backgroundTertiary
+            searchBar.layer.cornerRadius = 12
+            searchBar.layer.borderWidth = 1
+            searchBar.layer.borderColor = AppColor.border.cgColor
+            searchBar.clipsToBounds = true
+            
+            let tap = UITapGestureRecognizer(target: self, action: #selector(searchBarTapped))
+            searchBar.addGestureRecognizer(tap)
+            
+            // 돋보기 아이콘 색상 조절
+            let searchIcon = searchBar.subviews.compactMap { $0 as? UIImageView }.first
+            searchIcon?.tintColor = AppColor.textTertiary
+        }
+
+        // 4. SearchLabel 플레이스홀더 스타일링
+        if let searchLabel = searchLabel {
+            searchLabel.font = AppFont.bodyMedium
+            searchLabel.textColor = AppColor.textTertiary
+        }
+
+        // 5. FilterButton 스타일링
+        if let filterButton = filterButton {
+            filterButton.backgroundColor = AppColor.primary.withAlphaComponent(0.08)
+            filterButton.layer.cornerRadius = 12
+            filterButton.tintColor = AppColor.primary
+            filterButton.setTitle("", for: .normal)
+            filterButton.addTarget(self, action: #selector(filterTapped), for: .touchUpInside)
+        }
+
+        // 6. SectionLabel 스타일링
+        if let sectionLabel = sectionLabel {
+            sectionLabel.font = AppFont.heading2
+            sectionLabel.textColor = AppColor.textPrimary
+        }
     }
 
     private func setupTableView() {
@@ -149,8 +197,30 @@ final class HomeViewController: UIViewController {
 
     // MARK: - Actions
 
-    @objc private func searchBarTapped() { viewModel.onAction(.tapSearchBar) }
-    @objc private func filterTapped()    { viewModel.onAction(.tapFilter) }
+    @objc private func searchBarTapped() {
+        guard let searchBar = searchBar else { return }
+        UIView.animate(withDuration: 0.1, animations: {
+            searchBar.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                searchBar.transform = .identity
+            }
+            self.viewModel.onAction(.tapSearchBar)
+        }
+    }
+
+    @objc private func filterTapped() {
+        guard let filterButton = filterButton else { return }
+        UIView.animate(withDuration: 0.1, animations: {
+            filterButton.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                filterButton.transform = .identity
+            }
+            self.viewModel.onAction(.tapFilter)
+        }
+    }
+
     @objc private func refreshPulled()   { viewModel.onAction(.refresh) }
 
     private func showAlert(_ message: String) {
