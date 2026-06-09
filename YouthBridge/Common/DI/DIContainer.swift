@@ -63,4 +63,8 @@ final class DIContainer {
     func makeScrappedPoliciesViewController() -> ScrappedPoliciesViewController {
         return ScrappedPoliciesViewController()
     }
+
+    func makeRecentPoliciesViewController() -> RecentPoliciesViewController {
+        return RecentPoliciesViewController()
+    }
 }

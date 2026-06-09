@@ -15,12 +15,14 @@ enum MyPageAction {
     case tapPolicy(Policy)
     case tapRemoveScrap(Policy)
     case tapScrappedListCard
+    case tapRecentTotal
 }
 
 enum MyPageEffect {
     case navigateToDetail(Policy)
     case showPermissionAlert
     case navigateToScrappedList
+    case navigateToRecentList
 }
 
 @MainActor
@@ -70,6 +72,8 @@ final class MyPageViewModel {
             loadScrapped()
         case .tapScrappedListCard:
             effect.send(.navigateToScrappedList)
+        case .tapRecentTotal:
+            effect.send(.navigateToRecentList)
         }
     }
 

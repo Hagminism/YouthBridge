@@ -81,6 +81,9 @@ final class MyPageViewController: UIViewController {
                 case .navigateToScrappedList:
                     let vc = DIContainer.shared.makeScrappedPoliciesViewController()
                     self?.navigationController?.pushViewController(vc, animated: true)
+                case .navigateToRecentList:
+                    let vc = DIContainer.shared.makeRecentPoliciesViewController()
+                    self?.navigationController?.pushViewController(vc, animated: true)
                 }
             }
             .store(in: &cancellables)
@@ -357,6 +360,7 @@ final class MyPageViewController: UIViewController {
         recentTotalButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .medium)
         recentTotalButton.setTitleColor(AppColor.primaryBlue2, for: .normal)
         recentTotalButton.tintColor = AppColor.primaryBlue2
+        recentTotalButton.addTarget(self, action: #selector(recentTotalTapped), for: .touchUpInside)
         recentTotalButton.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(recentTotalButton)
         
@@ -425,6 +429,10 @@ final class MyPageViewController: UIViewController {
     @objc @IBAction private func notifToggleChanged() {
         guard let notifToggle = notifToggle else { return }
         viewModel.onAction(.toggleNotifications(notifToggle.isOn))
+    }
+
+    @objc private func recentTotalTapped() {
+        viewModel.onAction(.tapRecentTotal)
     }
 }
 
