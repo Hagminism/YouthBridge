@@ -6,15 +6,17 @@ final class SearchViewController: UIViewController {
     private var viewModel: SearchViewModel!
     private var cancellables = Set<AnyCancellable>()
 
-    private let searchController  = UISearchController(searchResultsController: nil)
+    private let headerContainer = UIView()
+    private let searchBar = UISearchBar()
+    private let filterButton = UIButton(type: .custom)
+
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
-    private let filterBarButton   = UIBarButtonItem()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel = DIContainer.shared.makeSearchViewModel()
-        setupNavBar()
+        setupTopBar()
         setupTableView()
         setupActivityIndicator()
         bindState()
@@ -23,7 +25,7 @@ final class SearchViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        searchController.searchBar.becomeFirstResponder()
+        searchBar.becomeFirstResponder()
     }
 
     private func bindState() {
@@ -59,32 +61,58 @@ final class SearchViewController: UIViewController {
             .store(in: &cancellables)
     }
 
-    private func setupNavBar() {
-        title = "검색"
-        view.backgroundColor = AppColor.background
-        navigationController?.setNavigationBarHidden(false, animated: false)
+    private func setupTopBar() {
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        view.backgroundColor = AppColor.backgroundSecondary
 
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.automaticallyShowsCancelButton = false
-        searchController.searchBar.placeholder = "정책 이름이나 키워드를 검색하세요"
-        searchController.searchBar.showsCancelButton = false
-        searchController.searchBar.delegate = self
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
-        definesPresentationContext = true
+        headerContainer.backgroundColor = AppColor.background
+        headerContainer.layer.masksToBounds = false
+        headerContainer.layer.shadowColor = UIColor.black.cgColor
+        headerContainer.layer.shadowOpacity = 0.04
+        headerContainer.layer.shadowOffset = CGSize(width: 0, height: 4)
+        headerContainer.layer.shadowRadius = 8
+        headerContainer.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(headerContainer)
 
+        // Search bar
+        searchBar.searchBarStyle = .minimal
+        searchBar.placeholder = "정책 이름이나 키워드를 검색하세요"
+        searchBar.delegate = self
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        
         // Filter button
-        let filterImage = UIImage(systemName: "slider.horizontal.3")
-        filterBarButton.image = filterImage
-        filterBarButton.tintColor = AppColor.textSecondary
-        filterBarButton.target = self
-        filterBarButton.action = #selector(filterTapped)
-        navigationItem.rightBarButtonItem = filterBarButton
+        filterButton.backgroundColor = AppColor.primary.withAlphaComponent(0.08)
+        filterButton.layer.cornerRadius = 12
+        filterButton.tintColor = AppColor.primary
+        filterButton.setImage(UIImage(systemName: "slider.horizontal.3"), for: .normal)
+        filterButton.addTarget(self, action: #selector(filterTapped), for: .touchUpInside)
+        filterButton.translatesAutoresizingMaskIntoConstraints = false
+
+        let stack = UIStackView(arrangedSubviews: [searchBar, filterButton])
+        stack.axis = .horizontal
+        stack.spacing = 12
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        headerContainer.addSubview(stack)
+
+        NSLayoutConstraint.activate([
+            headerContainer.topAnchor.constraint(equalTo: view.topAnchor),
+            headerContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            headerContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 64),
+
+            stack.leadingAnchor.constraint(equalTo: headerContainer.leadingAnchor, constant: 8),
+            stack.trailingAnchor.constraint(equalTo: headerContainer.trailingAnchor, constant: -16),
+            stack.bottomAnchor.constraint(equalTo: headerContainer.bottomAnchor, constant: -8),
+            stack.heightAnchor.constraint(equalToConstant: 48),
+
+            filterButton.widthAnchor.constraint(equalToConstant: 44),
+            filterButton.heightAnchor.constraint(equalToConstant: 44)
+        ])
     }
 
     private func updateFilterButton(active: Bool) {
-        filterBarButton.tintColor = active ? AppColor.primary : AppColor.textSecondary
+        filterButton.tintColor = active ? AppColor.primary : AppColor.textSecondary
     }
 
     private func setupTableView() {
@@ -94,6 +122,21 @@ final class SearchViewController: UIViewController {
         tableView.delegate   = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.register(PolicyCardCell.self, forCellReuseIdentifier: PolicyCardCell.reuseID)
+
+        if let superview = tableView.superview {
+            // 스토리보드에서 자동 생성된 top constraint 비활성화하여 겹침 방지
+            if let oldTop = superview.constraints.first(where: { 
+                ($0.firstItem as? UITableView == tableView && $0.firstAttribute == .top) || 
+                ($0.secondItem as? UITableView == tableView && $0.secondAttribute == .top)
+            }) {
+                oldTop.isActive = false
+            }
+            
+            tableView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                tableView.topAnchor.constraint(equalTo: headerContainer.bottomAnchor)
+            ])
+        }
     }
 
     private func setupActivityIndicator() {
@@ -104,7 +147,7 @@ final class SearchViewController: UIViewController {
 
     // MARK: - Actions
 
-    @IBAction private func filterTapped() {
+    @objc private func filterTapped() {
         let vc = DIContainer.shared.makeFilterViewController(current: viewModel.state.appliedFilter)
         vc.onApply = { [weak self] filter in
             self?.viewModel.onAction(.applyFilter(filter))
@@ -119,23 +162,14 @@ final class SearchViewController: UIViewController {
     }
 }
 
-// MARK: - UISearchResultsUpdating
-extension SearchViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        viewModel.onAction(.updateKeyword(searchController.searchBar.text ?? ""))
-    }
-}
-
 // MARK: - UISearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         viewModel.onAction(.search(searchBar.text ?? ""))
-    }
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        searchBar.setShowsCancelButton(false, animated: false)
+        searchBar.resignFirstResponder()
     }
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchBar.setShowsCancelButton(false, animated: false)
+        viewModel.onAction(.updateKeyword(searchText))
     }
 }
 
@@ -144,6 +178,12 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         viewModel.state.showResults ? 1 : 2
+    }
+
+    func tableView(_ tableView: UITableView, numberOfItemsInSection section: Int) -> Int {
+        let state = viewModel.state
+        if state.showResults { return state.results.count }
+        return section == 0 ? state.recentKeywords.count : state.trendingKeywords.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -191,10 +231,14 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
             viewModel.onAction(.tapResult(state.results[indexPath.row]))
         } else if indexPath.section == 0 {
             let kw = state.recentKeywords[indexPath.row]
-            searchController.searchBar.text = kw
+            searchBar.text = kw
             viewModel.onAction(.search(kw))
+            searchBar.resignFirstResponder()
         } else {
-            viewModel.onAction(.selectTrending(state.trendingKeywords[indexPath.row]))
+            let kw = state.trendingKeywords[indexPath.row]
+            searchBar.text = kw
+            viewModel.onAction(.selectTrending(kw))
+            searchBar.resignFirstResponder()
         }
     }
 
