@@ -14,7 +14,7 @@ final class GeminiRemoteDataSource: GeminiDataSourceProtocol {
     func summarize(content: String) async throws -> String {
         let trimmed = String(content.prefix(Self.maxContentLength))
 
-        var components = URLComponents(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent")!
+        var components = URLComponents(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent")!
         components.queryItems = [URLQueryItem(name: "key", value: apiKey)]
         guard let url = components.url else { throw URLError(.badURL) }
 
