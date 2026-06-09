@@ -5,7 +5,7 @@ final class NotificationsViewController: UIViewController {
 
     private var viewModel: NotificationsViewModel!
     private var cancellables = Set<AnyCancellable>()
-    private let tableView = UITableView()
+    @IBOutlet private weak var tableView: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,38 +16,35 @@ final class NotificationsViewController: UIViewController {
         viewModel.onAction(.viewDidLoad)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.onAction(.viewDidLoad)
+    }
+
     private func setupNavBar() {
-        title = "활동"
+        title = "알림"
         view.backgroundColor = AppColor.backgroundSecondary
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
 
     private func setupTableView() {
+        guard let tableView = tableView else { return }
         tableView.backgroundColor = .clear
         tableView.separatorStyle  = .none
         tableView.register(NotificationCell.self, forCellReuseIdentifier: NotificationCell.reuseID)
         tableView.dataSource = self
         tableView.delegate   = self
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
 
         // Header
         let headerView = buildHeaderView()
         tableView.tableHeaderView = headerView
-
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-        ])
     }
 
     private func buildHeaderView() -> UIView {
         let header = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 60))
 
         let titleLbl = UILabel()
-        titleLbl.text = "활동"
+        titleLbl.text = "알림"
         titleLbl.font = AppFont.heading2
         titleLbl.textColor = AppColor.textPrimary
 
@@ -74,11 +71,11 @@ final class NotificationsViewController: UIViewController {
     private func bindState() {
         viewModel.$state
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.tableView.reloadData() }
+            .sink { [weak self] _ in self?.tableView?.reloadData() }
             .store(in: &cancellables)
     }
 
-    @objc private func markAllTapped() { viewModel.onAction(.markAllRead) }
+    @IBAction private func markAllTapped() { viewModel.onAction(.markAllRead) }
 }
 
 extension NotificationsViewController: UITableViewDataSource, UITableViewDelegate {
@@ -95,6 +92,15 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         viewModel.onAction(.tapItem(viewModel.state.items[indexPath.row]))
+    }
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let item = viewModel.state.items[indexPath.row]
+            viewModel.onAction(.deleteItem(item))
+        }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { UITableView.automaticDimension }
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat { 150 }
@@ -116,7 +122,10 @@ final class NotificationCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setup()
     }
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
 
     func configure(with item: NotificationItem) {
         titleLabel.text = item.title

@@ -25,7 +25,7 @@ final class PolicyRepositoryImpl: PolicyRepository {
     }
 
     func fetchPolicies(region: String?, category: String?, keyword: String?, page: Int) async throws -> [Policy] {
-        let dtos = try await remote.fetchPolicies(region: nil, category: nil, keyword: keyword, page: page)
+        let dtos = try await remote.fetchPolicies(region: region, category: category, keyword: keyword, page: page)
         let filtered = filter(dtos: dtos, region: region, category: category)
         return PolicyMapper.toDomainList(filtered)
     }

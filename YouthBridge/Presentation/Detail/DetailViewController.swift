@@ -39,6 +39,8 @@ final class DetailViewController: UIViewController {
     init(policy: Policy) {
         super.init(nibName: nil, bundle: nil)
         viewModel = DIContainer.shared.makeDetailViewModel(policy: policy)
+        hidesBottomBarWhenPushed = true
+        RecentPoliciesManager.shared.add(policy: policy)
     }
     required init?(coder: NSCoder) { fatalError() }
 
@@ -54,6 +56,11 @@ final class DetailViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: animated)
         setupNavBar()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        restoreNavBar()
     }
 
     // MARK: - Bind
@@ -111,7 +118,17 @@ final class DetailViewController: UIViewController {
         scrapButton.setImage(scrapImg, for: .normal)
         scrapButton.tintColor = state.isScrapped ? AppColor.primary : AppColor.textSecondary
 
-        applyButton.isHidden = policy.linkUrl == nil
+        if policy.linkUrl == nil {
+            applyButton.isEnabled = false
+            applyButton.backgroundColor = AppColor.tagBackground
+            applyButton.setTitle("신청 링크 없음", for: .disabled)
+            applyButton.setTitleColor(AppColor.textDisabled, for: .disabled)
+        } else {
+            applyButton.isEnabled = true
+            applyButton.backgroundColor = AppColor.primary
+            applyButton.setTitle("지금 신청하기", for: .normal)
+            applyButton.setTitleColor(.white, for: .normal)
+        }
 
         if state.isSummarizing {
             aiButton.configuration?.title = ""
@@ -139,17 +156,42 @@ final class DetailViewController: UIViewController {
     // MARK: - NavBar
     private func setupNavBar() {
         navigationController?.setNavigationBarHidden(false, animated: true)
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.titleTextAttributes = [.foregroundColor: AppColor.textPrimary]
+        appearance.largeTitleTextAttributes = [.foregroundColor: AppColor.textPrimary]
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.tintColor = AppColor.textPrimary
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "chevron.left"),
             style: .plain, target: self, action: #selector(backTapped)
         )
         navigationItem.leftBarButtonItem?.tintColor = AppColor.textPrimary
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "square.and.arrow.up"),
             style: .plain, target: self, action: #selector(shareTapped)
         )
         navigationItem.rightBarButtonItem?.tintColor = AppColor.textPrimary
         view.backgroundColor = AppColor.backgroundSecondary
+    }
+
+    private func restoreNavBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = AppColor.background
+        appearance.titleTextAttributes = [.foregroundColor: AppColor.textPrimary]
+        appearance.largeTitleTextAttributes = [.foregroundColor: AppColor.textPrimary]
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.tintColor = nil
     }
 
     // MARK: - Layout
@@ -440,4 +482,3 @@ final class DetailViewController: UIViewController {
         }
     }
 }
-

@@ -6,33 +6,28 @@ final class MyPageViewController: UIViewController {
     private var viewModel: MyPageViewModel!
     private var cancellables = Set<AnyCancellable>()
 
-    private let scrollView = UIScrollView()
-    private let contentStack = UIStackView()
+    @IBOutlet private weak var scrollView: UIScrollView!
+    @IBOutlet private weak var contentStack: UIStackView!
 
-    // Identity section
-    private let logoImageView = UIImageView()
-    private let appNameLabel = UILabel()
-    private let appTaglineLabel = UILabel()
+    // Identity section (not used storyboard outlets, built programmatically for exact layout match)
+    @IBOutlet private weak var logoImageView: UIImageView!
+    @IBOutlet private weak var appNameLabel: UILabel!
+    @IBOutlet private weak var appTaglineLabel: UILabel!
 
-    // Stats section
-    private let statsCard = UIView()
-    private let scrappedCountLabel = UILabel()
+    // Card outlets (repurposed for menu-style cards)
+    @IBOutlet private weak var statsCard: UIView!
+    @IBOutlet private weak var scrappedCountLabel: UILabel!
 
     // Notification toggle
-    private let notifCard = UIView()
-    private let notifToggle = UISwitch()
+    @IBOutlet private weak var notifCard: UIView!
+    @IBOutlet private weak var notifToggle: UISwitch!
 
-    // Saved policies
-    private let savedSectionLabel = UILabel()
-    private let savedCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 200, height: 120)
-        layout.minimumLineSpacing = 12
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        return UICollectionView(frame: .zero, collectionViewLayout: layout)
-    }()
-    private let emptyLabel = UILabel()
+    // Saved policies (repurposed for "Recently Viewed Policies")
+    @IBOutlet private weak var savedCollectionView: UICollectionView!
+    @IBOutlet private weak var emptyLabel: UILabel!
+
+    private let recentTitleLabel = UILabel()
+    private let recentTotalButton = UIButton(type: .system)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +41,7 @@ final class MyPageViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
         viewModel.onAction(.viewDidLoad)
     }
 
@@ -67,7 +63,26 @@ final class MyPageViewController: UIViewController {
             .sink { [weak self] effect in
                 switch effect {
                 case .navigateToDetail(let policy):
-                    let vc = DetailViewController(policy: policy)
+                    let vc = DIContainer.shared.makeDetailViewController(policy: policy)
+                    self?.navigationController?.pushViewController(vc, animated: true)
+                case .showPermissionAlert:
+                    let alert = UIAlertController(
+                        title: "알림 권한 필요",
+                        message: "알림을 받으려면 시스템 설정에서 알림 권한을 허용해야 합니다. 설정 화면으로 이동하시겠습니까?",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+                    alert.addAction(UIAlertAction(title: "이동", style: .default) { _ in
+                        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+                        }
+                    })
+                    self?.present(alert, animated: true, completion: nil)
+                case .navigateToScrappedList:
+                    let vc = DIContainer.shared.makeScrappedPoliciesViewController()
+                    self?.navigationController?.pushViewController(vc, animated: true)
+                case .navigateToRecentList:
+                    let vc = DIContainer.shared.makeRecentPoliciesViewController()
                     self?.navigationController?.pushViewController(vc, animated: true)
                 }
             }
@@ -75,305 +90,479 @@ final class MyPageViewController: UIViewController {
     }
 
     private func render(_ state: MyPageState) {
-        scrappedCountLabel.text = "저장한 정책 \(state.scrappedCount)개"
-        notifToggle.isOn = state.notificationsEnabled
-        savedCollectionView.reloadData()
-        emptyLabel.isHidden = !state.scrappedPolicies.isEmpty
-        savedCollectionView.isHidden = state.scrappedPolicies.isEmpty
+        if let countLabel = scrappedCountLabel {
+            let countString = "\(state.scrappedCount)"
+            let arrowString = " >"
+            let attributedText = NSMutableAttributedString(
+                string: countString,
+                attributes: [
+                    .font: UIFont.systemFont(ofSize: 16, weight: .bold),
+                    .foregroundColor: AppColor.primaryBlue2
+                ]
+            )
+            attributedText.append(NSAttributedString(
+                string: arrowString,
+                attributes: [
+                    .font: UIFont.systemFont(ofSize: 14, weight: .medium),
+                    .foregroundColor: AppColor.textTertiary
+                ]
+            ))
+            countLabel.attributedText = attributedText
+        }
+        notifToggle?.isOn = state.notificationsEnabled
+        savedCollectionView?.reloadData()
+        
+        let hasRecents = !state.recentViewedPolicies.isEmpty
+        emptyLabel?.isHidden = hasRecents
+        savedCollectionView?.isHidden = !hasRecents
     }
 
     private func setupUI() {
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(scrollView)
+        // 스택뷰 레이아웃 설정
+        if let heightConstraint = contentStack?.constraints.first(where: { $0.firstAttribute == .height }) {
+            heightConstraint.isActive = false
+        }
+        
+        if let contentStack = contentStack {
+            contentStack.isLayoutMarginsRelativeArrangement = true
+            contentStack.layoutMargins = UIEdgeInsets(top: 24, left: 16, bottom: 24, right: 16)
+            contentStack.spacing = 20
+        }
+        
+        // 1. 프로필/로고 헤더 블록 구성
+        buildLogoHeaderSection()
 
-        contentStack.axis = .vertical
-        contentStack.spacing = 16
-        contentStack.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(contentStack)
+        // 2. "저장한 정책" 메뉴 카드 스타일링
+        setupScrappedMenuCard()
 
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+        // 3. "푸시 알림 설정" 스위치 카드 스타일링
+        setupNotificationSwitchCard()
 
-            contentStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 24),
-            contentStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            contentStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -24),
-            contentStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-        ])
-
-        buildIdentitySection()
-        buildStatsSection()
-        buildNotifSection()
-        buildSavedSection()
+        // 4. "최근 본 정책" 섹션 스타일링
+        setupRecentViewedSection()
     }
 
-    private func buildIdentitySection() {
-        let container = UIView()
-        container.backgroundColor = AppColor.background
-        container.layer.cornerRadius = 16
-        container.layer.borderWidth = 1
-        container.layer.borderColor = AppColor.border.cgColor
-
-        let iconBg = UIView()
-        iconBg.backgroundColor = AppColor.primary.withAlphaComponent(0.1)
-        iconBg.layer.cornerRadius = 24
-        iconBg.translatesAutoresizingMaskIntoConstraints = false
-
-        let bridgeIcon = UIImageView(image: UIImage(systemName: "arrow.trianglehead.2.clockwise.rotate.90"))
-        bridgeIcon.tintColor = AppColor.primary
-        bridgeIcon.contentMode = .scaleAspectFit
-        bridgeIcon.translatesAutoresizingMaskIntoConstraints = false
-        iconBg.addSubview(bridgeIcon)
-
-        appNameLabel.text = "Youth Bridge"
-        appNameLabel.font = AppFont.logoTitle
-        appNameLabel.textColor = AppColor.primary
-
-        appTaglineLabel.text = "청년들을 위한 정책 브릿지"
-        appTaglineLabel.font = AppFont.bodyMedium
-        appTaglineLabel.textColor = AppColor.textSecondary
-
-        let textStack = UIStackView(arrangedSubviews: [appNameLabel, appTaglineLabel])
-        textStack.axis = .vertical
-        textStack.spacing = 4
-
-        let hStack = UIStackView(arrangedSubviews: [iconBg, textStack])
-        hStack.axis = .horizontal
-        hStack.spacing = 16
-        hStack.alignment = .center
-        hStack.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(hStack)
-
+    private func buildLogoHeaderSection() {
+        guard let contentStack = contentStack else { return }
+        
+        // 중복 방지 체크
+        if contentStack.arrangedSubviews.contains(where: { $0.tag == 999 }) { return }
+        
+        let headerContainer = UIView()
+        headerContainer.tag = 999
+        headerContainer.translatesAutoresizingMaskIntoConstraints = false
+        contentStack.insertArrangedSubview(headerContainer, at: 0)
+        
+        // 앱 이름 레이블
+        let nameLabel = UILabel()
+        nameLabel.text = "Youth Bridge"
+        nameLabel.textColor = AppColor.primaryBlue2
+        nameLabel.font = UIFont.systemFont(ofSize: 28, weight: .bold)
+        nameLabel.textAlignment = .center
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        headerContainer.addSubview(nameLabel)
+        
+        // 태그라인 레이블
+        let tagLabel = UILabel()
+        tagLabel.text = "청년들을 위한 정책 브릿지"
+        tagLabel.textColor = AppColor.textTertiary
+        tagLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        tagLabel.textAlignment = .center
+        tagLabel.translatesAutoresizingMaskIntoConstraints = false
+        headerContainer.addSubview(tagLabel)
+        
         NSLayoutConstraint.activate([
-            iconBg.widthAnchor.constraint(equalToConstant: 48),
-            iconBg.heightAnchor.constraint(equalToConstant: 48),
-            bridgeIcon.centerXAnchor.constraint(equalTo: iconBg.centerXAnchor),
-            bridgeIcon.centerYAnchor.constraint(equalTo: iconBg.centerYAnchor),
-            bridgeIcon.widthAnchor.constraint(equalToConstant: 24),
-            bridgeIcon.heightAnchor.constraint(equalToConstant: 24),
-
-            hStack.topAnchor.constraint(equalTo: container.topAnchor, constant: 20),
-            hStack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
-            hStack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20),
-            hStack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -20),
+            headerContainer.heightAnchor.constraint(equalToConstant: 110),
+            
+            nameLabel.topAnchor.constraint(equalTo: headerContainer.topAnchor, constant: 20),
+            nameLabel.leadingAnchor.constraint(equalTo: headerContainer.leadingAnchor),
+            nameLabel.trailingAnchor.constraint(equalTo: headerContainer.trailingAnchor),
+            
+            tagLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 6),
+            tagLabel.leadingAnchor.constraint(equalTo: headerContainer.leadingAnchor),
+            tagLabel.trailingAnchor.constraint(equalTo: headerContainer.trailingAnchor)
         ])
-
-        let wrapper = paddedHorizontally(container)
-        contentStack.addArrangedSubview(wrapper)
     }
 
-    private func buildStatsSection() {
-        statsCard.backgroundColor = AppColor.primary
-        statsCard.layer.cornerRadius = 16
-
-        let iconView = UIImageView(image: UIImage(systemName: "bookmark.fill"))
-        iconView.tintColor = .white.withAlphaComponent(0.8)
-        iconView.contentMode = .scaleAspectFit
-        iconView.widthAnchor.constraint(equalToConstant: 32).isActive = true
-        iconView.heightAnchor.constraint(equalToConstant: 32).isActive = true
-
-        scrappedCountLabel.text = "저장한 정책 0개"
-        scrappedCountLabel.font = AppFont.heading2
-        scrappedCountLabel.textColor = .white
-
-        let subLabel = UILabel()
-        subLabel.text = "저장한 정책을 아래에서 확인하세요"
-        subLabel.font = AppFont.captionSmall
-        subLabel.textColor = .white.withAlphaComponent(0.8)
-
-        let textStack = UIStackView(arrangedSubviews: [scrappedCountLabel, subLabel])
-        textStack.axis = .vertical
-        textStack.spacing = 4
-
-        let hStack = UIStackView(arrangedSubviews: [iconView, textStack])
-        hStack.axis = .horizontal
-        hStack.spacing = 16
-        hStack.alignment = .center
-        hStack.translatesAutoresizingMaskIntoConstraints = false
-        statsCard.addSubview(hStack)
+    private func setupScrappedMenuCard() {
+        guard let statsCard = statsCard else { return }
         statsCard.translatesAutoresizingMaskIntoConstraints = false
-
+        statsCard.backgroundColor = AppColor.background
+        statsCard.layer.cornerRadius = 16
+        statsCard.layer.borderWidth = 0
+        addCardShadow(to: statsCard)
+        
+        // 터치 제스처 추가
+        let tap = UITapGestureRecognizer(target: self, action: #selector(scrappedCardTapped))
+        statsCard.addGestureRecognizer(tap)
+        
+        // 내부 컴포넌트들 재배치 및 동적 생성
+        statsCard.subviews.forEach { $0.removeFromSuperview() }
+        
+        // 왼쪽 파란색 배경 아이콘 컨테이너
+        let iconBg = UIView()
+        iconBg.backgroundColor = AppColor.primaryBlue2.withAlphaComponent(0.12)
+        iconBg.layer.cornerRadius = 20
+        iconBg.translatesAutoresizingMaskIntoConstraints = false
+        statsCard.addSubview(iconBg)
+        
+        let bookmarkIcon = UIImageView(image: UIImage(systemName: "bookmark.fill"))
+        bookmarkIcon.tintColor = AppColor.primaryBlue2
+        bookmarkIcon.contentMode = .scaleAspectFit
+        bookmarkIcon.translatesAutoresizingMaskIntoConstraints = false
+        iconBg.addSubview(bookmarkIcon)
+        
+        // 중앙 타이틀 및 서브 타이틀
+        let titleLabel = UILabel()
+        titleLabel.text = "저장한 정책"
+        titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        titleLabel.textColor = AppColor.textPrimary
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        statsCard.addSubview(titleLabel)
+        
+        let subtitleLabel = UILabel()
+        subtitleLabel.text = "북마크한 청년 정책 모아보기"
+        subtitleLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        subtitleLabel.textColor = AppColor.textTertiary
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        statsCard.addSubview(subtitleLabel)
+        
+        // 우측 개수 레이블
+        let countLabel = UILabel()
+        countLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        countLabel.textColor = AppColor.primaryBlue2
+        countLabel.textAlignment = .right
+        countLabel.translatesAutoresizingMaskIntoConstraints = false
+        statsCard.addSubview(countLabel)
+        self.scrappedCountLabel = countLabel
+        
         NSLayoutConstraint.activate([
-            hStack.topAnchor.constraint(equalTo: statsCard.topAnchor, constant: 20),
-            hStack.leadingAnchor.constraint(equalTo: statsCard.leadingAnchor, constant: 20),
-            hStack.trailingAnchor.constraint(equalTo: statsCard.trailingAnchor, constant: -20),
-            hStack.bottomAnchor.constraint(equalTo: statsCard.bottomAnchor, constant: -20),
+            statsCard.heightAnchor.constraint(equalToConstant: 76),
+            
+            iconBg.leadingAnchor.constraint(equalTo: statsCard.leadingAnchor, constant: 16),
+            iconBg.centerYAnchor.constraint(equalTo: statsCard.centerYAnchor),
+            iconBg.widthAnchor.constraint(equalToConstant: 44),
+            iconBg.heightAnchor.constraint(equalToConstant: 44),
+            
+            bookmarkIcon.centerXAnchor.constraint(equalTo: iconBg.centerXAnchor),
+            bookmarkIcon.centerYAnchor.constraint(equalTo: iconBg.centerYAnchor),
+            bookmarkIcon.widthAnchor.constraint(equalToConstant: 20),
+            bookmarkIcon.heightAnchor.constraint(equalToConstant: 20),
+            
+            titleLabel.topAnchor.constraint(equalTo: statsCard.topAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: iconBg.trailingAnchor, constant: 14),
+            titleLabel.trailingAnchor.constraint(equalTo: countLabel.leadingAnchor, constant: -8),
+            
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            subtitleLabel.leadingAnchor.constraint(equalTo: iconBg.trailingAnchor, constant: 14),
+            subtitleLabel.trailingAnchor.constraint(equalTo: countLabel.leadingAnchor, constant: -8),
+            
+            countLabel.trailingAnchor.constraint(equalTo: statsCard.trailingAnchor, constant: -20),
+            countLabel.centerYAnchor.constraint(equalTo: statsCard.centerYAnchor),
+            countLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 40)
         ])
-
-        contentStack.addArrangedSubview(paddedHorizontally(statsCard))
     }
 
-    private func buildNotifSection() {
+    private func setupNotificationSwitchCard() {
+        guard let notifCard = notifCard else { return }
+        notifCard.translatesAutoresizingMaskIntoConstraints = false
         notifCard.backgroundColor = AppColor.background
         notifCard.layer.cornerRadius = 16
-        notifCard.layer.borderWidth = 1
-        notifCard.layer.borderColor = AppColor.border.cgColor
-
-        let iconView = UIImageView(image: UIImage(systemName: "bell.fill"))
-        iconView.tintColor = AppColor.primary
-        iconView.contentMode = .scaleAspectFit
-        iconView.widthAnchor.constraint(equalToConstant: 20).isActive = true
-
-        let titleLbl = UILabel()
-        titleLbl.text = "마감 알림"
-        titleLbl.font = AppFont.policyTitle
-        titleLbl.textColor = AppColor.textPrimary
-
-        let subLbl = UILabel()
-        subLbl.text = "저장한 정책 마감 7일 전 알림"
-        subLbl.font = AppFont.captionSmall
-        subLbl.textColor = AppColor.textSecondary
-
-        let textStack = UIStackView(arrangedSubviews: [titleLbl, subLbl])
-        textStack.axis = .vertical
-        textStack.spacing = 2
-
-        notifToggle.onTintColor = AppColor.primary
-        notifToggle.addTarget(self, action: #selector(notifToggleChanged), for: .valueChanged)
-
-        let hStack = UIStackView(arrangedSubviews: [iconView, textStack, UIView(), notifToggle])
-        hStack.axis = .horizontal
-        hStack.spacing = 12
-        hStack.alignment = .center
-        hStack.translatesAutoresizingMaskIntoConstraints = false
-        notifCard.addSubview(hStack)
-
+        notifCard.layer.borderWidth = 0
+        addCardShadow(to: notifCard)
+        
+        notifCard.subviews.forEach { if $0 != notifToggle { $0.removeFromSuperview() } }
+        
+        // 왼쪽 연파란색 배경 아이콘 컨테이너
+        let iconBg = UIView()
+        iconBg.backgroundColor = AppColor.primaryBlue2.withAlphaComponent(0.12)
+        iconBg.layer.cornerRadius = 20
+        iconBg.translatesAutoresizingMaskIntoConstraints = false
+        notifCard.addSubview(iconBg)
+        
+        let bellIcon = UIImageView(image: UIImage(systemName: "bell.fill"))
+        bellIcon.tintColor = AppColor.primaryBlue2
+        bellIcon.contentMode = .scaleAspectFit
+        bellIcon.translatesAutoresizingMaskIntoConstraints = false
+        iconBg.addSubview(bellIcon)
+        
+        // 중앙 타이틀 및 서브 타이틀
+        let titleLabel = UILabel()
+        titleLabel.text = "푸시 알림 설정"
+        titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        titleLabel.textColor = AppColor.textPrimary
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        notifCard.addSubview(titleLabel)
+        
+        let subtitleLabel = UILabel()
+        subtitleLabel.text = "마감 임박 및 정책 업데이트 알림"
+        subtitleLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        subtitleLabel.textColor = AppColor.textTertiary
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        notifCard.addSubview(subtitleLabel)
+        
+        if let notifToggle = notifToggle {
+            notifToggle.translatesAutoresizingMaskIntoConstraints = false
+            notifToggle.onTintColor = AppColor.primaryBlue2
+            notifToggle.addTarget(self, action: #selector(notifToggleChanged), for: .valueChanged)
+            notifCard.addSubview(notifToggle)
+            
+            NSLayoutConstraint.activate([
+                notifToggle.trailingAnchor.constraint(equalTo: notifCard.trailingAnchor, constant: -20),
+                notifToggle.centerYAnchor.constraint(equalTo: notifCard.centerYAnchor)
+            ])
+        }
+        
         NSLayoutConstraint.activate([
-            hStack.topAnchor.constraint(equalTo: notifCard.topAnchor, constant: 16),
-            hStack.leadingAnchor.constraint(equalTo: notifCard.leadingAnchor, constant: 16),
-            hStack.trailingAnchor.constraint(equalTo: notifCard.trailingAnchor, constant: -16),
-            hStack.bottomAnchor.constraint(equalTo: notifCard.bottomAnchor, constant: -16),
+            notifCard.heightAnchor.constraint(equalToConstant: 76),
+            
+            iconBg.leadingAnchor.constraint(equalTo: notifCard.leadingAnchor, constant: 16),
+            iconBg.centerYAnchor.constraint(equalTo: notifCard.centerYAnchor),
+            iconBg.widthAnchor.constraint(equalToConstant: 44),
+            iconBg.heightAnchor.constraint(equalToConstant: 44),
+            
+            bellIcon.centerXAnchor.constraint(equalTo: iconBg.centerXAnchor),
+            bellIcon.centerYAnchor.constraint(equalTo: iconBg.centerYAnchor),
+            bellIcon.widthAnchor.constraint(equalToConstant: 20),
+            bellIcon.heightAnchor.constraint(equalToConstant: 20),
+            
+            titleLabel.topAnchor.constraint(equalTo: notifCard.topAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: iconBg.trailingAnchor, constant: 14),
+            titleLabel.trailingAnchor.constraint(equalTo: notifToggle?.leadingAnchor ?? notifCard.trailingAnchor, constant: -8),
+            
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            subtitleLabel.leadingAnchor.constraint(equalTo: iconBg.trailingAnchor, constant: 14),
+            subtitleLabel.trailingAnchor.constraint(equalTo: notifToggle?.leadingAnchor ?? notifCard.trailingAnchor, constant: -8)
         ])
-
-        contentStack.addArrangedSubview(paddedHorizontally(notifCard))
     }
 
-    private func buildSavedSection() {
-        savedSectionLabel.text = "저장한 정책"
-        savedSectionLabel.font = AppFont.heading2
-        savedSectionLabel.textColor = AppColor.textPrimary
-        savedSectionLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        let labelWrapper = UIView()
-        labelWrapper.addSubview(savedSectionLabel)
-        NSLayoutConstraint.activate([
-            savedSectionLabel.topAnchor.constraint(equalTo: labelWrapper.topAnchor),
-            savedSectionLabel.leadingAnchor.constraint(equalTo: labelWrapper.leadingAnchor, constant: 16),
-            savedSectionLabel.trailingAnchor.constraint(equalTo: labelWrapper.trailingAnchor, constant: -16),
-            savedSectionLabel.bottomAnchor.constraint(equalTo: labelWrapper.bottomAnchor),
-        ])
-        contentStack.addArrangedSubview(labelWrapper)
-
+    private func setupRecentViewedSection() {
+        guard let savedCollectionView = savedCollectionView else { return }
+        guard let container = savedCollectionView.superview else { return }
+        
+        container.translatesAutoresizingMaskIntoConstraints = false
+        savedCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // 컨테이너 스타일링 (테두리/배경 해제, 투명 처리)
+        container.backgroundColor = .clear
+        container.layer.borderWidth = 0
+        container.subviews.forEach { if $0 != savedCollectionView && $0 != emptyLabel { $0.removeFromSuperview() } }
+        
+        // 헤더 타이틀 "최근 본 정책"
+        recentTitleLabel.text = "최근 본 정책"
+        recentTitleLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        recentTitleLabel.textColor = AppColor.textPrimary
+        recentTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(recentTitleLabel)
+        
+        // 우측 "전체보기" 버튼
+        recentTotalButton.setTitle("전체보기", for: .normal)
+        recentTotalButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .medium)
+        recentTotalButton.setTitleColor(AppColor.primaryBlue2, for: .normal)
+        recentTotalButton.tintColor = AppColor.primaryBlue2
+        recentTotalButton.addTarget(self, action: #selector(recentTotalTapped), for: .touchUpInside)
+        recentTotalButton.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(recentTotalButton)
+        
+        if let emptyLabel = emptyLabel {
+            emptyLabel.text = "최근 본 정책이 없습니다."
+            emptyLabel.font = AppFont.bodyMedium
+            emptyLabel.textColor = AppColor.textTertiary
+            emptyLabel.translatesAutoresizingMaskIntoConstraints = false
+            container.addSubview(emptyLabel)
+            
+            NSLayoutConstraint.activate([
+                emptyLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+                emptyLabel.topAnchor.constraint(equalTo: recentTitleLabel.bottomAnchor, constant: 60)
+            ])
+        }
+        
+        // 컬렉션 뷰 설정 (가로 스크롤)
         savedCollectionView.backgroundColor = .clear
         savedCollectionView.showsHorizontalScrollIndicator = false
-        savedCollectionView.register(SavedPolicyCell.self, forCellWithReuseIdentifier: SavedPolicyCell.reuseID)
+        savedCollectionView.register(RecentPolicyCell.self, forCellWithReuseIdentifier: RecentPolicyCell.reuseID)
         savedCollectionView.dataSource = self
         savedCollectionView.delegate = self
-        savedCollectionView.heightAnchor.constraint(equalToConstant: 132).isActive = true
-        contentStack.addArrangedSubview(savedCollectionView)
-
-        emptyLabel.text = "저장한 정책이 없습니다.\n홈에서 정책을 탐색하고 북마크해보세요!"
-        emptyLabel.font = AppFont.body
-        emptyLabel.textColor = AppColor.textTertiary
-        emptyLabel.textAlignment = .center
-        emptyLabel.numberOfLines = 0
-        emptyLabel.isHidden = true
-        contentStack.addArrangedSubview(paddedHorizontally(emptyLabel))
-    }
-
-    private func paddedHorizontally(_ view: UIView) -> UIView {
-        let wrapper = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        wrapper.addSubview(view)
+        
+        if let layout = savedCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.scrollDirection = .horizontal
+            layout.minimumInteritemSpacing = 12
+            layout.minimumLineSpacing = 12
+        }
+        
         NSLayoutConstraint.activate([
-            view.topAnchor.constraint(equalTo: wrapper.topAnchor),
-            view.leadingAnchor.constraint(equalTo: wrapper.leadingAnchor, constant: 16),
-            view.trailingAnchor.constraint(equalTo: wrapper.trailingAnchor, constant: -16),
-            view.bottomAnchor.constraint(equalTo: wrapper.bottomAnchor),
+            container.heightAnchor.constraint(equalToConstant: 240),
+            
+            recentTitleLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: 10),
+            recentTitleLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            
+            recentTotalButton.centerYAnchor.constraint(equalTo: recentTitleLabel.centerYAnchor),
+            recentTotalButton.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            
+            savedCollectionView.topAnchor.constraint(equalTo: recentTitleLabel.bottomAnchor, constant: 12),
+            savedCollectionView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            savedCollectionView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            savedCollectionView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
         ])
-        return wrapper
     }
 
-    @objc private func notifToggleChanged() {
+    private func addCardShadow(to view: UIView) {
+        view.layer.masksToBounds = false
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = 0.04
+        view.layer.shadowOffset = CGSize(width: 0, height: 4)
+        view.layer.shadowRadius = 8
+    }
+
+    @objc private func scrappedCardTapped() {
+        guard let statsCard = statsCard else { return }
+        UIView.animate(withDuration: 0.1, animations: {
+            statsCard.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                statsCard.transform = .identity
+            }
+            self.viewModel.onAction(.tapScrappedListCard)
+        }
+    }
+
+    @objc @IBAction private func notifToggleChanged() {
+        guard let notifToggle = notifToggle else { return }
         viewModel.onAction(.toggleNotifications(notifToggle.isOn))
+    }
+
+    @objc private func recentTotalTapped() {
+        viewModel.onAction(.tapRecentTotal)
     }
 }
 
 // MARK: - UICollectionViewDataSource/Delegate
-extension MyPageViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+extension MyPageViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.state.scrappedPolicies.count
+        return viewModel.state.recentViewedPolicies.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedPolicyCell.reuseID, for: indexPath) as? SavedPolicyCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentPolicyCell.reuseID, for: indexPath) as? RecentPolicyCell else {
             return UICollectionViewCell()
         }
-        cell.configure(with: viewModel.state.scrappedPolicies[indexPath.item])
+        cell.configure(with: viewModel.state.recentViewedPolicies[indexPath.item])
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.onAction(.tapPolicy(viewModel.state.scrappedPolicies[indexPath.item]))
+        viewModel.onAction(.tapPolicy(viewModel.state.recentViewedPolicies[indexPath.item]))
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 140, height: 176)
     }
 }
 
-// MARK: - SavedPolicyCell
-final class SavedPolicyCell: UICollectionViewCell {
-    static let reuseID = "SavedPolicyCell"
+// MARK: - RecentPolicyCell
+final class RecentPolicyCell: UICollectionViewCell {
+    static let reuseID = "RecentPolicyCell"
 
     private let cardView = UIView()
-    private let dDayLabel = UILabel()
+    private let iconContainer = UIView()
+    private let iconImageView = UIImageView()
+    private let categoryLabel = UILabel()
     private let titleLabel = UILabel()
-    private let orgLabel = UILabel()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
     }
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
 
     func configure(with policy: Policy) {
-        dDayLabel.text = policy.dDayText
-        dDayLabel.textColor = policy.isUrgent ? AppColor.urgentRed : AppColor.textSecondary
         titleLabel.text = policy.name
-        orgLabel.text = policy.operatingOrg
+        categoryLabel.text = policy.category
+        
+        let color: UIColor
+        let iconName: String
+        switch policy.category {
+        case "일자리":
+            color = UIColor(hex: "#2563eb")
+            iconName = "doc.text.fill"
+        case "주거":
+            color = UIColor(hex: "#10b981")
+            iconName = "mappin.and.ellipse"
+        case "건강·복지", "복지":
+            color = UIColor(hex: "#ef4444")
+            iconName = "heart.fill"
+        case "교육":
+            color = UIColor(hex: "#f59e0b")
+            iconName = "book.fill"
+        case "문화·예술", "문화":
+            color = UIColor(hex: "#8b5cf6")
+            iconName = "guitars.fill"
+        default:
+            color = UIColor(hex: "#6b7280")
+            iconName = "sparkles"
+        }
+        
+        categoryLabel.textColor = color
+        iconImageView.image = UIImage(systemName: iconName)
+        iconImageView.tintColor = AppColor.textTertiary
+        iconContainer.backgroundColor = AppColor.backgroundTertiary
     }
 
     private func setup() {
         cardView.backgroundColor = AppColor.background
-        cardView.layer.cornerRadius = 12
+        cardView.layer.cornerRadius = 16
         cardView.layer.borderWidth = 1
         cardView.layer.borderColor = AppColor.border.cgColor
+        cardView.clipsToBounds = true
         contentView.addSubview(cardView)
         cardView.translatesAutoresizingMaskIntoConstraints = false
 
-        dDayLabel.font = AppFont.captionSmall
-        titleLabel.font = AppFont.bodyMedium
+        iconContainer.layer.cornerRadius = 12
+        iconContainer.clipsToBounds = true
+        cardView.addSubview(iconContainer)
+        iconContainer.translatesAutoresizingMaskIntoConstraints = false
+
+        iconImageView.contentMode = .scaleAspectFit
+        iconContainer.addSubview(iconImageView)
+        iconImageView.translatesAutoresizingMaskIntoConstraints = false
+
+        categoryLabel.font = UIFont.systemFont(ofSize: 11, weight: .bold)
+        cardView.addSubview(categoryLabel)
+        categoryLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .bold)
         titleLabel.textColor = AppColor.textPrimary
         titleLabel.numberOfLines = 2
-        orgLabel.font = AppFont.captionSmall
-        orgLabel.textColor = AppColor.textSecondary
-
-        let stack = UIStackView(arrangedSubviews: [dDayLabel, titleLabel, orgLabel])
-        stack.axis = .vertical
-        stack.spacing = 4
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        cardView.addSubview(stack)
+        cardView.addSubview(titleLabel)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            cardView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
+            cardView.topAnchor.constraint(equalTo: contentView.topAnchor),
             cardView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             cardView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            cardView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
+            cardView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
 
-            stack.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 14),
-            stack.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 14),
-            stack.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -14),
-            stack.bottomAnchor.constraint(lessThanOrEqualTo: cardView.bottomAnchor, constant: -14),
+            iconContainer.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 10),
+            iconContainer.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 10),
+            iconContainer.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -10),
+            iconContainer.heightAnchor.constraint(equalToConstant: 76),
+
+            iconImageView.centerXAnchor.constraint(equalTo: iconContainer.centerXAnchor),
+            iconImageView.centerYAnchor.constraint(equalTo: iconContainer.centerYAnchor),
+            iconImageView.widthAnchor.constraint(equalToConstant: 26),
+            iconImageView.heightAnchor.constraint(equalToConstant: 26),
+
+            categoryLabel.topAnchor.constraint(equalTo: iconContainer.bottomAnchor, constant: 10),
+            categoryLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
+            categoryLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -12),
+
+            titleLabel.topAnchor.constraint(equalTo: categoryLabel.bottomAnchor, constant: 4),
+            titleLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
+            titleLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -12),
+            titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: cardView.bottomAnchor, constant: -10)
         ])
     }
 }

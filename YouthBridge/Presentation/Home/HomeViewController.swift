@@ -6,19 +6,18 @@ final class HomeViewController: UIViewController {
     private var viewModel: HomeViewModel!
     private var cancellables = Set<AnyCancellable>()
 
-    private let tableView         = UITableView()
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
+
+    @IBOutlet private weak var logoLabel: UILabel!
+    @IBOutlet private weak var searchBar: UIView!
+    @IBOutlet private weak var searchLabel: UILabel!
+    @IBOutlet private weak var filterButton: UIButton!
+    @IBOutlet private weak var sectionLabel: UILabel!
+    @IBOutlet private weak var headerView: UIView!
+
     private let refreshControl    = UIRefreshControl()
-    private let activityIndicator = UIActivityIndicatorView(style: .medium)
     private let footerSpinner     = UIActivityIndicatorView(style: .medium)
-
-    private let logoLabel    = UILabel()
-    private let searchBar    = UIView()
-    private let searchLabel  = UILabel()
-    private let filterButton = UIButton(type: .system)
-    private let sectionLabel = UILabel()
-
-    // Keep a reference so tableView can be constrained to it
-    private var headerView: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,10 +49,10 @@ final class HomeViewController: UIViewController {
                 guard let self else { return }
                 switch effect {
                 case .navigateToSearch:
-                    let vc = SearchViewController()
+                    let vc = DIContainer.shared.makeSearchViewController()
                     self.navigationController?.pushViewController(vc, animated: true)
                 case .navigateToFilter(let current):
-                    let vc = FilterViewController(currentFilter: current)
+                    let vc = DIContainer.shared.makeFilterViewController(current: current)
                     vc.onApply = { [weak self] filter in
                         self?.viewModel.onAction(.applyFilter(filter))
                     }
@@ -65,7 +64,7 @@ final class HomeViewController: UIViewController {
                     }
                     self.present(nav, animated: true)
                 case .navigateToDetail(let policy):
-                    let vc = DetailViewController(policy: policy)
+                    let vc = DIContainer.shared.makeDetailViewController(policy: policy)
                     self.navigationController?.pushViewController(vc, animated: true)
                 case .showError(let msg):
                     self.showAlert(msg)
@@ -75,11 +74,13 @@ final class HomeViewController: UIViewController {
     }
 
     private func render(_ state: HomeState) {
-        if state.isLoading {
-            activityIndicator.startAnimating()
-        } else {
-            activityIndicator.stopAnimating()
-            refreshControl.endRefreshing()
+        if let activityIndicator = activityIndicator {
+            if state.isLoading {
+                activityIndicator.startAnimating()
+            } else {
+                activityIndicator.stopAnimating()
+                refreshControl.endRefreshing()
+            }
         }
 
         if state.isLoadingMore {
@@ -91,13 +92,15 @@ final class HomeViewController: UIViewController {
         let policies = state.displayPolicies
         let urgentCount = policies.filter { $0.isUrgent }.count
         let total = policies.count
-        if urgentCount > 0 {
-            sectionLabel.text = "전체 정책 \(total)건 · 마감 임박 \(urgentCount)건"
-        } else {
-            sectionLabel.text = total > 0 ? "전체 정책 \(total)건" : "전체 정책"
+        if let sectionLabel = sectionLabel {
+            if urgentCount > 0 {
+                sectionLabel.text = "전체 정책 \(total)건 · 마감 임박 \(urgentCount)건"
+            } else {
+                sectionLabel.text = total > 0 ? "전체 정책 \(total)건" : "전체 정책"
+            }
         }
 
-        tableView.reloadData()
+        tableView?.reloadData()
     }
 
     // MARK: - UI Setup
@@ -112,106 +115,62 @@ final class HomeViewController: UIViewController {
     }
 
     private func setupTopBar() {
-        let header = UIView()
-        header.backgroundColor = AppColor.background
-        header.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(header)
-        headerView = header
+        // 1. HeaderView 스타일링 (그림자 및 배경)
+        if let headerView = headerView {
+            headerView.backgroundColor = AppColor.background
+            headerView.layer.masksToBounds = false
+            headerView.layer.shadowColor = UIColor.black.cgColor
+            headerView.layer.shadowOpacity = 0.04
+            headerView.layer.shadowOffset = CGSize(width: 0, height: 4)
+            headerView.layer.shadowRadius = 8
+        }
 
-        let border = UIView()
-        border.backgroundColor = AppColor.border
-        border.translatesAutoresizingMaskIntoConstraints = false
-        header.addSubview(border)
+        // 2. LogoLabel 스타일링
+        if let logoLabel = logoLabel {
+            logoLabel.font = AppFont.logoTitle
+            logoLabel.textColor = AppColor.primary
+        }
 
-        // Logo
-        logoLabel.text = "Youth Bridge"
-        logoLabel.font = AppFont.logoTitle
-        logoLabel.textColor = AppColor.primary
-        logoLabel.translatesAutoresizingMaskIntoConstraints = false
-        header.addSubview(logoLabel)
+        // 3. SearchBar 컨테이너 스타일링
+        if let searchBar = searchBar {
+            searchBar.backgroundColor = AppColor.backgroundTertiary
+            searchBar.layer.cornerRadius = 12
+            searchBar.layer.borderWidth = 1
+            searchBar.layer.borderColor = AppColor.border.cgColor
+            searchBar.clipsToBounds = true
+            
+            let tap = UITapGestureRecognizer(target: self, action: #selector(searchBarTapped))
+            searchBar.addGestureRecognizer(tap)
+            
+            // 돋보기 아이콘 색상 조절
+            let searchIcon = searchBar.subviews.compactMap { $0 as? UIImageView }.first
+            searchIcon?.tintColor = AppColor.textTertiary
+        }
 
-        // Search bar
-        searchBar.backgroundColor = AppColor.backgroundSecondary
-        searchBar.layer.cornerRadius = 12
-        searchBar.layer.borderWidth = 1
-        searchBar.layer.borderColor = AppColor.border.cgColor
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        header.addSubview(searchBar)
+        // 4. SearchLabel 플레이스홀더 스타일링
+        if let searchLabel = searchLabel {
+            searchLabel.font = AppFont.bodyMedium
+            searchLabel.textColor = AppColor.textTertiary
+        }
 
-        let iconView = UIImageView(image: UIImage(systemName: "magnifyingglass"))
-        iconView.tintColor = AppColor.textTertiary
-        iconView.contentMode = .scaleAspectFit
-        iconView.translatesAutoresizingMaskIntoConstraints = false
-        searchBar.addSubview(iconView)
+        // 5. FilterButton 스타일링
+        if let filterButton = filterButton {
+            filterButton.backgroundColor = AppColor.primary.withAlphaComponent(0.08)
+            filterButton.layer.cornerRadius = 12
+            filterButton.tintColor = AppColor.primary
+            filterButton.setTitle("", for: .normal)
+            filterButton.addTarget(self, action: #selector(filterTapped), for: .touchUpInside)
+        }
 
-        searchLabel.text = "정책 이름이나 키워드를 검색하세요"
-        searchLabel.font = AppFont.body
-        searchLabel.textColor = AppColor.textDisabled
-        searchLabel.translatesAutoresizingMaskIntoConstraints = false
-        searchBar.addSubview(searchLabel)
-
-        let tap = UITapGestureRecognizer(target: self, action: #selector(searchBarTapped))
-        searchBar.addGestureRecognizer(tap)
-
-        // Filter button
-        filterButton.setImage(UIImage(systemName: "slider.horizontal.3"), for: .normal)
-        filterButton.tintColor = AppColor.textSecondary
-        filterButton.backgroundColor = AppColor.backgroundSecondary
-        filterButton.layer.cornerRadius = 12
-        filterButton.layer.borderWidth = 1
-        filterButton.layer.borderColor = AppColor.border.cgColor
-        filterButton.addTarget(self, action: #selector(filterTapped), for: .touchUpInside)
-        filterButton.translatesAutoresizingMaskIntoConstraints = false
-        header.addSubview(filterButton)
-
-        // Section label — INSIDE header so it stays fixed with the header
-        sectionLabel.text = "전체 정책"
-        sectionLabel.font = AppFont.heading2
-        sectionLabel.textColor = AppColor.textPrimary
-        sectionLabel.translatesAutoresizingMaskIntoConstraints = false
-        header.addSubview(sectionLabel)
-
-        NSLayoutConstraint.activate([
-            // Header: top of screen → grows to fit content
-            header.topAnchor.constraint(equalTo: view.topAnchor),
-            header.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            header.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            header.bottomAnchor.constraint(equalTo: sectionLabel.bottomAnchor, constant: 12),
-
-            border.leadingAnchor.constraint(equalTo: header.leadingAnchor),
-            border.trailingAnchor.constraint(equalTo: header.trailingAnchor),
-            border.bottomAnchor.constraint(equalTo: header.bottomAnchor),
-            border.heightAnchor.constraint(equalToConstant: 0.5),
-
-            logoLabel.centerXAnchor.constraint(equalTo: header.centerXAnchor),
-            logoLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-
-            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 48),
-            searchBar.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 16),
-            searchBar.trailingAnchor.constraint(equalTo: filterButton.leadingAnchor, constant: -10),
-            searchBar.heightAnchor.constraint(equalToConstant: 44),
-
-            iconView.leadingAnchor.constraint(equalTo: searchBar.leadingAnchor, constant: 12),
-            iconView.centerYAnchor.constraint(equalTo: searchBar.centerYAnchor),
-            iconView.widthAnchor.constraint(equalToConstant: 17),
-            iconView.heightAnchor.constraint(equalToConstant: 17),
-
-            searchLabel.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 8),
-            searchLabel.trailingAnchor.constraint(equalTo: searchBar.trailingAnchor, constant: -12),
-            searchLabel.centerYAnchor.constraint(equalTo: searchBar.centerYAnchor),
-
-            filterButton.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -16),
-            filterButton.centerYAnchor.constraint(equalTo: searchBar.centerYAnchor),
-            filterButton.widthAnchor.constraint(equalToConstant: 44),
-            filterButton.heightAnchor.constraint(equalToConstant: 44),
-
-            sectionLabel.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 16),
-            sectionLabel.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 16),
-            sectionLabel.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -16),
-        ])
+        // 6. SectionLabel 스타일링
+        if let sectionLabel = sectionLabel {
+            sectionLabel.font = AppFont.heading2
+            sectionLabel.textColor = AppColor.textPrimary
+        }
     }
 
     private func setupTableView() {
+        guard let tableView = tableView else { return }
         tableView.backgroundColor = .clear
         tableView.separatorStyle  = .none
         tableView.contentInsetAdjustmentBehavior = .never
@@ -221,11 +180,6 @@ final class HomeViewController: UIViewController {
         tableView.refreshControl = refreshControl
         refreshControl.tintColor = AppColor.primary
         refreshControl.addTarget(self, action: #selector(refreshPulled), for: .valueChanged)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(tableView)
-
-        // Bring header above tableView
-        view.bringSubviewToFront(headerView)
 
         let footer = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 56))
         footerSpinner.color = AppColor.primary
@@ -233,30 +187,40 @@ final class HomeViewController: UIViewController {
         footerSpinner.center = CGPoint(x: footer.bounds.midX, y: footer.bounds.midY)
         footer.addSubview(footerSpinner)
         tableView.tableFooterView = footer
-
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-        ])
     }
 
     private func setupActivityIndicator() {
+        guard let activityIndicator = activityIndicator else { return }
         activityIndicator.hidesWhenStopped = true
         activityIndicator.color = AppColor.primary
-        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(activityIndicator)
-        NSLayoutConstraint.activate([
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-        ])
     }
 
     // MARK: - Actions
 
-    @objc private func searchBarTapped() { viewModel.onAction(.tapSearchBar) }
-    @objc private func filterTapped()    { viewModel.onAction(.tapFilter) }
+    @objc private func searchBarTapped() {
+        guard let searchBar = searchBar else { return }
+        UIView.animate(withDuration: 0.1, animations: {
+            searchBar.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                searchBar.transform = .identity
+            }
+            self.viewModel.onAction(.tapSearchBar)
+        }
+    }
+
+    @objc private func filterTapped() {
+        guard let filterButton = filterButton else { return }
+        UIView.animate(withDuration: 0.1, animations: {
+            filterButton.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                filterButton.transform = .identity
+            }
+            self.viewModel.onAction(.tapFilter)
+        }
+    }
+
     @objc private func refreshPulled()   { viewModel.onAction(.refresh) }
 
     private func showAlert(_ message: String) {

@@ -44,7 +44,14 @@ final class SearchViewModel {
         switch action {
         case .updateKeyword(let kw):
             state.keyword = kw
-            if kw.isEmpty { state.showResults = false }
+            if kw.isEmpty {
+                if state.appliedFilter.isDefault {
+                    state.showResults = false
+                    state.results = []
+                } else {
+                    performSearch("")
+                }
+            }
         case .search(let kw):
             guard !kw.trimmingCharacters(in: .whitespaces).isEmpty else { return }
             addToHistory(kw)
@@ -64,7 +71,10 @@ final class SearchViewModel {
             effect.send(.navigateToDetail(policy))
         case .applyFilter(let filter):
             state.appliedFilter = filter
-            if !state.keyword.isEmpty {
+            if state.keyword.isEmpty && filter.isDefault {
+                state.showResults = false
+                state.results = []
+            } else {
                 performSearch(state.keyword)
             }
         }

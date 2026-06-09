@@ -19,7 +19,10 @@ final class PolicyCardCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setup()
     }
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -222,7 +225,10 @@ final class PaddedLabel: UILabel {
         self.insets = insets
         super.init(frame: .zero)
     }
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) {
+        self.insets = .zero
+        super.init(coder: coder)
+    }
 
     override func drawText(in rect: CGRect) {
         super.drawText(in: rect.inset(by: insets))
