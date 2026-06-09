@@ -82,7 +82,7 @@ extension ScrappedPoliciesViewController: UITableViewDataSource, UITableViewDele
         return cell
     }
 
-    func tableView(_ tableView: UITableView, didSelectItemAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let policy = scrappedPolicies[indexPath.row]
         let vc = DIContainer.shared.makeDetailViewController(policy: policy)

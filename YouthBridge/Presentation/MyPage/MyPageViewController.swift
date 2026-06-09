@@ -150,21 +150,6 @@ final class MyPageViewController: UIViewController {
         headerContainer.translatesAutoresizingMaskIntoConstraints = false
         contentStack.insertArrangedSubview(headerContainer, at: 0)
         
-        // 로고 백그라운드 카드 (둥근 정사각형 & 그림자)
-        let logoCard = UIView()
-        logoCard.backgroundColor = AppColor.background
-        logoCard.layer.cornerRadius = 24
-        addCardShadow(to: logoCard)
-        logoCard.translatesAutoresizingMaskIntoConstraints = false
-        headerContainer.addSubview(logoCard)
-        
-        // 로고 이미지 (다리 마크)
-        let logoImgView = UIImageView(image: UIImage(systemName: "bridge"))
-        logoImgView.tintColor = AppColor.primaryBlue2
-        logoImgView.contentMode = .scaleAspectFit
-        logoImgView.translatesAutoresizingMaskIntoConstraints = false
-        logoCard.addSubview(logoImgView)
-        
         // 앱 이름 레이블
         let nameLabel = UILabel()
         nameLabel.text = "Youth Bridge"
@@ -184,19 +169,9 @@ final class MyPageViewController: UIViewController {
         headerContainer.addSubview(tagLabel)
         
         NSLayoutConstraint.activate([
-            headerContainer.heightAnchor.constraint(equalToConstant: 200),
+            headerContainer.heightAnchor.constraint(equalToConstant: 110),
             
-            logoCard.centerXAnchor.constraint(equalTo: headerContainer.centerXAnchor),
-            logoCard.topAnchor.constraint(equalTo: headerContainer.topAnchor, constant: 10),
-            logoCard.widthAnchor.constraint(equalToConstant: 80),
-            logoCard.heightAnchor.constraint(equalToConstant: 80),
-            
-            logoImgView.centerXAnchor.constraint(equalTo: logoCard.centerXAnchor),
-            logoImgView.centerYAnchor.constraint(equalTo: logoCard.centerYAnchor),
-            logoImgView.widthAnchor.constraint(equalToConstant: 46),
-            logoImgView.heightAnchor.constraint(equalToConstant: 46),
-            
-            nameLabel.topAnchor.constraint(equalTo: logoCard.bottomAnchor, constant: 16),
+            nameLabel.topAnchor.constraint(equalTo: headerContainer.topAnchor, constant: 20),
             nameLabel.leadingAnchor.constraint(equalTo: headerContainer.leadingAnchor),
             nameLabel.trailingAnchor.constraint(equalTo: headerContainer.trailingAnchor),
             
