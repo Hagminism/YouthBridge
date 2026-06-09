@@ -22,7 +22,7 @@ final class NotificationsViewController: UIViewController {
     }
 
     private func setupNavBar() {
-        title = "활동"
+        title = "알림"
         view.backgroundColor = AppColor.backgroundSecondary
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
@@ -44,7 +44,7 @@ final class NotificationsViewController: UIViewController {
         let header = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 60))
 
         let titleLbl = UILabel()
-        titleLbl.text = "활동"
+        titleLbl.text = "알림"
         titleLbl.font = AppFont.heading2
         titleLbl.textColor = AppColor.textPrimary
 
@@ -92,6 +92,15 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         viewModel.onAction(.tapItem(viewModel.state.items[indexPath.row]))
+    }
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let item = viewModel.state.items[indexPath.row]
+            viewModel.onAction(.deleteItem(item))
+        }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { UITableView.automaticDimension }
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat { 150 }

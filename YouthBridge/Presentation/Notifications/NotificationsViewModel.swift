@@ -21,11 +21,14 @@ enum NotificationsAction {
     case viewDidLoad
     case markAllRead
     case tapItem(NotificationItem)
+    case deleteItem(NotificationItem)
 }
 
 @MainActor
 final class NotificationsViewModel {
     @Published private(set) var state = NotificationsState()
+    
+    private let readKeys = "read_notification_identifiers"
 
     init() {}
 
@@ -34,23 +37,20 @@ final class NotificationsViewModel {
         case .viewDidLoad:
             refreshNotifications()
         case .markAllRead:
-            // 시스템 알림 센터에서 모든 발송된(Delivered) 알림들을 일괄 삭제하여 '모두 읽음' 처리
-            let center = UNUserNotificationCenter.current()
-            center.removeAllDeliveredNotifications()
-            
-            for i in state.items.indices {
-                state.items[i].isRead = true
-            }
+            // 시스템 알림 자체를 지우지 않고, 현재 로드된 모든 알림들의 읽음 상태를 UserDefaults에 반영
+            let allIdentifiers = state.items.map { $0.identifier }
+            markAllAsRead(identifiers: allIdentifiers)
             refreshNotifications()
         case .tapItem(let item):
-            // 탭한 알림은 시스템 알림 목록에서 제거 (읽음 처리)
+            // 카드를 탭했을 때 시스템 알림을 삭제하지 않고, 읽음 상태만 UserDefaults에 저장
+            markAsRead(identifier: item.identifier)
+            refreshNotifications()
+        case .deleteItem(let item):
+            // 스와이프 후 삭제 시에만 시스템 알림 및 UserDefaults 읽음 저장소에서 삭제
             let center = UNUserNotificationCenter.current()
             center.removeDeliveredNotifications(withIdentifiers: [item.identifier])
             center.removePendingNotificationRequests(withIdentifiers: [item.identifier])
-            
-            if let idx = state.items.firstIndex(where: { $0.id == item.id }) {
-                state.items[idx].isRead = true
-            }
+            removeFromRead(identifier: item.identifier)
             refreshNotifications()
         }
     }
@@ -61,6 +61,8 @@ final class NotificationsViewModel {
         center.getPendingNotificationRequests { [weak self] pendingRequests in
             center.getDeliveredNotifications { [weak self] deliveredNotifications in
                 guard let self = self else { return }
+                
+                let readSet = self.getReadIdentifiers()
                 
                 // 1. Pending (예약 대기 중인) 알림들 변환
                 let pendingItems = pendingRequests.compactMap { request -> NotificationItem? in
@@ -85,7 +87,7 @@ final class NotificationsViewModel {
                         body: content.body,
                         time: timeText,
                         isUrgent: request.identifier.contains("urgent"),
-                        isRead: false
+                        isRead: readSet.contains(request.identifier)
                     )
                 }
                 
@@ -102,7 +104,7 @@ final class NotificationsViewModel {
                         body: content.body,
                         time: formatter.string(from: date),
                         isUrgent: notification.request.identifier.contains("urgent"),
-                        isRead: true
+                        isRead: readSet.contains(notification.request.identifier)
                     )
                 }
                 
@@ -113,4 +115,31 @@ final class NotificationsViewModel {
             }
         }
     }
+
+    // MARK: - UserDefaults 읽음 상태 헬퍼
+    private func getReadIdentifiers() -> Set<String> {
+        let array = UserDefaults.standard.stringArray(forKey: readKeys) ?? []
+        return Set(array)
+    }
+
+    private func markAsRead(identifier: String) {
+        var set = getReadIdentifiers()
+        set.insert(identifier)
+        UserDefaults.standard.set(Array(set), forKey: readKeys)
+    }
+
+    private func markAllAsRead(identifiers: [String]) {
+        var set = getReadIdentifiers()
+        for id in identifiers {
+            set.insert(id)
+        }
+        UserDefaults.standard.set(Array(set), forKey: readKeys)
+    }
+
+    private func removeFromRead(identifier: String) {
+        var set = getReadIdentifiers()
+        set.remove(identifier)
+        UserDefaults.standard.set(Array(set), forKey: readKeys)
+    }
 }
+
